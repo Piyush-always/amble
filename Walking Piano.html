@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AmbleBeats - Turn Movement into Melody</title>
+  <meta name="description" content="AmbleBeats brings joy to children through our walking piano experience. Watch kids create music with every step.">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#14B8A6',
+            coral: '#FF6B6B',
+            pink: '#FF8FA3',
+            yellow: '#FFD93D',
+            green: '#6BCB77',
+            card: '#FFFFFF',
+            background: '#F0FDFA',
+            foreground: '#1A1A2E',
+            muted: '#64748B',
+          },
+          fontFamily: {
+            display: ['Fredoka', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Fredoka', sans-serif; }
+    
+    .gradient-hero {
+      background: linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 50%, #FEE2E2 100%);
+    }
+    
+    .text-gradient {
+      background: linear-gradient(135deg, #14B8A6, #FF6B6B);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .shadow-card {
+      box-shadow: 0 4px 20px rgba(20, 184, 166, 0.1);
+    }
+    
+    .btn-cta {
+      background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%);
+      box-shadow: 0 4px 15px rgba(20, 184, 166, 0.4);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(20, 184, 166, 0.5);
+    }
+    
+    .piano-key {
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    
+    .piano-key:hover, .piano-key.active {
+      transform: scaleY(0.95);
+      transform-origin: top;
+    }
+    
+    .piano-key.white:hover, .piano-key.white.active {
+      background: linear-gradient(180deg, #E0E0E0 0%, #FFFFFF 100%);
+    }
+    
+    .piano-key.black:hover, .piano-key.black.active {
+      background: linear-gradient(180deg, #333 0%, #1a1a1a 100%);
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 10px rgba(255, 107, 107, 0.5); }
+      50% { box-shadow: 0 0 25px rgba(255, 107, 107, 0.8); }
+    }
+    
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    .floating { animation: float 3s ease-in-out infinite; }
+    .pulse-glow { animation: pulse-glow 1.5s ease-in-out infinite; }
+    .rotating { animation: rotate 20s linear infinite; }
+    .rotating-reverse { animation: rotate 25s linear infinite reverse; }
+    
+    .robot-container { perspective: 1000px; }
+    
+    .floating-note {
+      position: absolute;
+      animation: float 2.5s ease-in-out infinite;
+      opacity: 0.7;
+    }
+    
+    .section-gradient {
+      background: linear-gradient(180deg, #FFFFFF 0%, #F0FDFA 100%);
+    }
+  </style>
+</head>
+<body class="bg-background text-foreground">
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="#home" class="flex items-center gap-2">
+        <img src="logo.jpg" alt="AmbleBeats Logo" class="h-14 w-auto rounded-lg">
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#home" class="text-foreground hover:text-primary transition-colors">Home</a>
+        <a href="#programs" class="text-foreground hover:text-primary transition-colors">Programs</a>
+        <a href="#gallery" class="text-foreground hover:text-primary transition-colors">Gallery</a>
+        <a href="#about" class="text-foreground hover:text-primary transition-colors">About</a>
+        <a href="#contact" class="btn-cta text-white px-6 py-2 rounded-full font-medium">Contact Us</a>
+      </div>
+      <button class="md:hidden text-2xl" onclick="toggleMobileMenu()">☰</button>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t px-4 py-4">
+      <a href="#home" class="block py-2">Home</a>
+      <a href="#programs" class="block py-2">Programs</a>
+      <a href="#gallery" class="block py-2">Gallery</a>
+      <a href="#about" class="block py-2">About</a>
+      <a href="#contact" class="block py-2 text-primary font-medium">Contact Us</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="gradient-hero min-h-screen flex items-center pt-20 relative overflow-hidden">
+    <!-- Floating Notes Background -->
+    <div class="absolute inset-0 pointer-events-none">
+      <span class="floating-note text-3xl" style="top: 15%; left: 10%; animation-delay: 0s;">🎵</span>
+      <span class="floating-note text-2xl" style="top: 25%; right: 15%; animation-delay: 0.5s;">🎶</span>
+      <span class="floating-note text-4xl" style="top: 60%; left: 5%; animation-delay: 1s;">♪</span>
+      <span class="floating-note text-2xl" style="top: 70%; right: 10%; animation-delay: 1.5s;">♫</span>
+      <span class="floating-note text-3xl" style="top: 40%; left: 85%; animation-delay: 2s;">🎹</span>
+    </div>
+    
+    <div class="container mx-auto px-4 py-16 relative z-10">
+      <div class="flex flex-col lg:flex-row items-center gap-12">
+        <!-- Left Content -->
+        <div class="flex-1 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
+            <span>🎹</span>
+            <span class="text-sm font-medium text-primary">Interactive Music Experience</span>
+          </div>
+          
+          <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            Turn Movement into <span class="text-gradient">Melody</span>
+          </h1>
+          
+          <p class="text-lg md:text-xl text-muted max-w-xl mb-8">
+            AmbleBeats brings joy to children through our walking piano experience. 
+            Watch kids create music with every step, enhancing cognitive and physical development.
+          </p>
+          
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+            <a href="#contact" class="btn-cta text-white px-8 py-4 rounded-full font-semibold text-lg">
+              Book a Demo
+            </a>
+            <button class="flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-primary text-primary font-semibold hover:bg-primary/5 transition-colors">
+              <span>▶</span> Watch It in Action
+            </button>
+          </div>
+        </div>
+        
+        <!-- Interactive Robot -->
+        <div class="flex-1 flex justify-center items-center robot-container" id="robotContainer">
+          <div class="relative">
+            <!-- Glowing aura -->
+            <div class="absolute inset-0 w-80 h-80 rounded-full bg-gradient-radial from-primary/30 via-coral/20 to-transparent blur-3xl"></div>
+            
+            <!-- Orbiting rings -->
+            <div class="absolute inset-0 w-72 h-72 rounded-full border-2 border-dashed border-primary/30 rotating" style="left: 50%; top: 50%; transform: translate(-50%, -50%);"></div>
+            <div class="absolute w-80 h-80 rounded-full border border-coral/20 rotating-reverse" style="left: 50%; top: 50%; transform: translate(-50%, -50%);"></div>
+            
+            <!-- Robot -->
+            <div class="floating relative z-10" id="robot">
+              <div class="w-52 h-52 rounded-3xl bg-gradient-to-br from-primary via-primary/90 to-coral shadow-2xl flex items-center justify-center relative">
+                <!-- Antenna -->
+                <div class="absolute -top-8 left-1/2 -translate-x-1/2 w-2 h-10 bg-primary rounded-full">
+                  <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-coral pulse-glow"></div>
+                </div>
+                
+                <!-- Ears -->
+                <div class="absolute top-1/2 -left-4 -translate-y-1/2 w-4 h-14 rounded-l-lg bg-primary/80"></div>
+                <div class="absolute top-1/2 -right-4 -translate-y-1/2 w-4 h-14 rounded-r-lg bg-primary/80"></div>
+                
+                <!-- Face plate -->
+                <div class="w-40 h-36 rounded-2xl bg-white/90 flex flex-col items-center justify-center gap-4">
+                  <!-- Eyes -->
+                  <div class="flex gap-8">
+                    <div class="w-10 h-10 rounded-full bg-white shadow-inner flex items-center justify-center relative" id="leftEye">
+                      <div class="w-5 h-5 rounded-full bg-foreground" id="leftPupil"></div>
+                      <div class="absolute top-1 left-1 w-2 h-2 rounded-full bg-white/80"></div>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-white shadow-inner flex items-center justify-center relative" id="rightEye">
+                      <div class="w-5 h-5 rounded-full bg-foreground" id="rightPupil"></div>
+                      <div class="absolute top-1 left-1 w-2 h-2 rounded-full bg-white/80"></div>
+                    </div>
+                  </div>
+                  <!-- Mouth -->
+                  <div class="w-16 h-5 rounded-full bg-coral/80" id="mouth"></div>
+                </div>
+              </div>
+              
+              <!-- Speech bubble -->
+              <div id="speechBubble" class="absolute -top-16 -right-8 bg-white rounded-2xl px-4 py-2 shadow-lg opacity-0 transition-opacity duration-300">
+                <span class="text-lg font-bold text-primary">🎵 Let's Play! 🎹</span>
+                <div class="absolute -bottom-2 left-8 w-4 h-4 bg-white rotate-45"></div>
+              </div>
+            </div>
+            
+            <!-- Musical notes -->
+            <span class="floating-note text-2xl" style="top: 10%; left: -10%; animation-delay: 0.2s;">🎵</span>
+            <span class="floating-note text-xl" style="top: 30%; right: -5%; animation-delay: 0.4s;">🎶</span>
+            <span class="floating-note text-2xl" style="bottom: 20%; left: -15%; animation-delay: 0.6s;">♪</span>
+            <span class="floating-note text-xl" style="bottom: 10%; right: -10%; animation-delay: 0.8s;">♫</span>
+          </div>
+          <p class="absolute -bottom-8 text-sm text-muted">👆 Click the robot to say hello!</p>
+        </div>
+      </div>
+      
+      <!-- Interactive Piano -->
+      <div class="mt-16">
+        <p class="text-center text-muted mb-4">🎹 Move your mouse over the keys to play!</p>
+        <div class="flex justify-center">
+          <div class="relative bg-gradient-to-b from-gray-800 to-gray-900 p-4 rounded-2xl shadow-2xl">
+            <div class="flex relative" id="piano">
+              <!-- White keys -->
+              <div class="piano-key white w-12 h-40 bg-gradient-to-b from-white to-gray-100 rounded-b-lg border border-gray-200 mx-0.5 shadow-md" data-note="C4"></div>
+              <div class="piano-key white w-12 h-40 bg-gradient-to-b from-white to-gray-100 rounded-b-lg border border-gray-200 mx-0.5 shadow-md" data-note="D4"></div>
+              <div class="piano-key white w-12 h-40 bg-gradient-to-b from-white to-gray-100 rounded-b-lg border border-gray-200 mx-0.5 shadow-md" data-note="E4"></div>
+              <div class="piano-key white w-12 h-40 bg-gradient-to-b from-white to-gray-100 rounded-b-lg border border-gray-200 mx-0.5 shadow-md" data-note="F4"></div>
+              <div class="piano-key white w-12 h-40 bg-gradient-to-b from-white to-gray-100 rounded-b-lg border border-gray-200 mx-0.5 shadow-md" data-note="G4"></div>
+              <div class="piano-key white w-12 h-40 bg-gradient-to-b from-white to-gray-100 rounded-b-lg border border-gray-200 mx-0.5 shadow-md" data-note="A4"></div>
+              <div class="piano-key white w-12 h-40 bg-gradient-to-b from-white to-gray-100 rounded-b-lg border border-gray-200 mx-0.5 shadow-md" data-note="B4"></div>
+              <div class="piano-key white w-12 h-40 bg-gradient-to-b from-white to-gray-100 rounded-b-lg border border-gray-200 mx-0.5 shadow-md" data-note="C5"></div>
+              
+              <!-- Black keys -->
+              <div class="piano-key black absolute w-8 h-24 bg-gradient-to-b from-gray-800 to-black rounded-b-lg shadow-lg z-10" style="left: 36px;" data-note="C#4"></div>
+              <div class="piano-key black absolute w-8 h-24 bg-gradient-to-b from-gray-800 to-black rounded-b-lg shadow-lg z-10" style="left: 88px;" data-note="D#4"></div>
+              <div class="piano-key black absolute w-8 h-24 bg-gradient-to-b from-gray-800 to-black rounded-b-lg shadow-lg z-10" style="left: 192px;" data-note="F#4"></div>
+              <div class="piano-key black absolute w-8 h-24 bg-gradient-to-b from-gray-800 to-black rounded-b-lg shadow-lg z-10" style="left: 244px;" data-note="G#4"></div>
+              <div class="piano-key black absolute w-8 h-24 bg-gradient-to-b from-gray-800 to-black rounded-b-lg shadow-lg z-10" style="left: 296px;" data-note="A#4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Trust Badges -->
+      <div class="flex flex-wrap justify-center gap-4 mt-12">
+        <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-card">
+          <span class="text-green">✓</span>
+          <span class="text-sm font-medium">Safe for all ages</span>
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-card">
+          <span class="text-green">✓</span>
+          <span class="text-sm font-medium">Trained facilitators</span>
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-card">
+          <span class="text-green">✓</span>
+          <span class="text-sm font-medium">Inclusive design</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div class="text-center p-8 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
+          <div class="text-4xl md:text-5xl font-display font-bold text-primary mb-2">500+</div>
+          <p class="text-muted font-medium">Children Reached</p>
+          <span class="text-3xl mt-2 block">👧</span>
+        </div>
+        <div class="text-center p-8 rounded-2xl bg-gradient-to-br from-coral/5 to-coral/10 border border-coral/20">
+          <div class="text-4xl md:text-5xl font-display font-bold text-coral mb-2">50+</div>
+          <p class="text-muted font-medium">Schools & NGOs Partnered</p>
+          <span class="text-3xl mt-2 block">🏫</span>
+        </div>
+        <div class="text-center p-8 rounded-2xl bg-gradient-to-br from-yellow/5 to-yellow/10 border border-yellow/20">
+          <div class="text-4xl md:text-5xl font-display font-bold text-yellow-600 mb-2">10,000+</div>
+          <p class="text-muted font-medium">Steps of Joy</p>
+          <span class="text-3xl mt-2 block">👣</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="py-20 section-gradient">
+    <div class="container mx-auto px-4">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-center mb-4">Why Walking Piano?</h2>
+      <p class="text-muted text-center max-w-2xl mx-auto mb-12">Discover the amazing benefits of our interactive music experience</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div class="p-6 rounded-2xl bg-white shadow-card hover:shadow-lg transition-shadow">
+          <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-3xl mb-4">🏃</div>
+          <h3 class="font-display font-semibold text-lg mb-2">Motor Skills</h3>
+          <p class="text-muted text-sm">Enhances coordination and physical development through playful movement</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-white shadow-card hover:shadow-lg transition-shadow">
+          <div class="w-14 h-14 rounded-xl bg-coral/10 flex items-center justify-center text-3xl mb-4">🎵</div>
+          <h3 class="font-display font-semibold text-lg mb-2">Music Education</h3>
+          <p class="text-muted text-sm">Makes learning music accessible, fun, and engaging for all children</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-white shadow-card hover:shadow-lg transition-shadow">
+          <div class="w-14 h-14 rounded-xl bg-yellow/10 flex items-center justify-center text-3xl mb-4">👥</div>
+          <h3 class="font-display font-semibold text-lg mb-2">Teamwork</h3>
+          <p class="text-muted text-sm">Encourages group participation and collaborative play experiences</p>
+        </div>
+        <div class="p-6 rounded-2xl bg-white shadow-card hover:shadow-lg transition-shadow">
+          <div class="w-14 h-14 rounded-xl bg-green/10 flex items-center justify-center text-3xl mb-4">♿</div>
+          <h3 class="font-display font-semibold text-lg mb-2">Inclusive</h3>
+          <p class="text-muted text-sm">Designed to be accessible and enjoyable for children of all abilities</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-center mb-4">How It Works</h2>
+      <p class="text-muted text-center max-w-2xl mx-auto mb-12">Three simple steps to bring musical joy to your event</p>
+      
+      <div class="flex flex-col md:flex-row items-center justify-center gap-8 max-w-4xl mx-auto">
+        <div class="flex-1 text-center p-8">
+          <div class="w-20 h-20 rounded-full bg-primary text-white text-3xl font-display font-bold flex items-center justify-center mx-auto mb-4">1</div>
+          <h3 class="font-display font-semibold text-xl mb-2">Book a Session</h3>
+          <p class="text-muted">Contact us to schedule your walking piano experience</p>
+        </div>
+        <div class="hidden md:block text-4xl text-primary">→</div>
+        <div class="flex-1 text-center p-8">
+          <div class="w-20 h-20 rounded-full bg-coral text-white text-3xl font-display font-bold flex items-center justify-center mx-auto mb-4">2</div>
+          <h3 class="font-display font-semibold text-xl mb-2">We Bring the Magic</h3>
+          <p class="text-muted">Our team sets up everything at your venue</p>
+        </div>
+        <div class="hidden md:block text-4xl text-coral">→</div>
+        <div class="flex-1 text-center p-8">
+          <div class="w-20 h-20 rounded-full bg-yellow text-foreground text-3xl font-display font-bold flex items-center justify-center mx-auto mb-4">3</div>
+          <h3 class="font-display font-semibold text-xl mb-2">Kids Create Music</h3>
+          <p class="text-muted">Watch children create melodies with every step!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Section -->
+  <section class="py-20 section-gradient">
+    <div class="container mx-auto px-4">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-center mb-4">See It In Action</h2>
+      <p class="text-muted text-center max-w-2xl mx-auto mb-12">Watch the magic unfold as children create music with every step</p>
+      
+      <div class="max-w-4xl mx-auto">
+        <div class="relative rounded-2xl overflow-hidden shadow-2xl bg-gray-900 aspect-video">
+          <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=1200&h=675&fit=crop" alt="Children playing music" class="w-full h-full object-cover opacity-80">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <button class="w-20 h-20 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-lg transition-all hover:scale-110" onclick="alert('Video player would open here!')">
+              <span class="text-primary text-4xl ml-1">▶</span>
+            </button>
+          </div>
+          <div class="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm rounded-lg px-4 py-2">
+            <p class="text-white text-sm font-medium">🎬 Walking Piano Experience - 2:30</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section id="gallery" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-center mb-4">Gallery</h2>
+      <p class="text-muted text-center max-w-2xl mx-auto mb-12">Moments of joy captured from our events</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div class="group relative rounded-2xl overflow-hidden shadow-card hover:shadow-xl transition-all">
+          <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=600&h=400&fit=crop" alt="Children at school event" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+            <p class="text-white font-medium">School Assembly Program</p>
+          </div>
+        </div>
+        <div class="group relative rounded-2xl overflow-hidden shadow-card hover:shadow-xl transition-all">
+          <img src="https://images.unsplash.com/photo-1509114397022-ed747cca3f65?w=600&h=400&fit=crop" alt="Kids playing piano" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+            <p class="text-white font-medium">Interactive Music Session</p>
+          </div>
+        </div>
+        <div class="group relative rounded-2xl overflow-hidden shadow-card hover:shadow-xl transition-all">
+          <img src="https://images.unsplash.com/photo-1544776193-352d25ca82cd?w=600&h=400&fit=crop" alt="Community event" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+            <p class="text-white font-medium">NGO Community Event</p>
+          </div>
+        </div>
+        <div class="group relative rounded-2xl overflow-hidden shadow-card hover:shadow-xl transition-all">
+          <img src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=600&h=400&fit=crop" alt="Festival activation" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+            <p class="text-white font-medium">Festival Activation</p>
+          </div>
+        </div>
+        <div class="group relative rounded-2xl overflow-hidden shadow-card hover:shadow-xl transition-all">
+          <img src="https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=600&h=400&fit=crop" alt="Special education workshop" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+            <p class="text-white font-medium">Special Education Workshop</p>
+          </div>
+        </div>
+        <div class="group relative rounded-2xl overflow-hidden shadow-card hover:shadow-xl transition-all">
+          <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&h=400&fit=crop" alt="Music and movement" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+            <p class="text-white font-medium">Music & Movement</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partners Section -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <p class="text-center text-muted mb-8">Trusted by leading schools and organizations</p>
+      <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+        <div class="px-6 py-3 bg-white rounded-xl shadow-sm text-lg font-display font-semibold text-gray-400">Delhi Public School</div>
+        <div class="px-6 py-3 bg-white rounded-xl shadow-sm text-lg font-display font-semibold text-gray-400">Hope Foundation</div>
+        <div class="px-6 py-3 bg-white rounded-xl shadow-sm text-lg font-display font-semibold text-gray-400">Sunrise Academy</div>
+        <div class="px-6 py-3 bg-white rounded-xl shadow-sm text-lg font-display font-semibold text-gray-400">Music For All NGO</div>
+        <div class="px-6 py-3 bg-white rounded-xl shadow-sm text-lg font-display font-semibold text-gray-400">City Festival</div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="programs" class="py-20 section-gradient">
+    <div class="container mx-auto px-4">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-center mb-4">Our Programs</h2>
+      <p class="text-muted text-center max-w-2xl mx-auto mb-12">Tailored experiences for every occasion</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div class="p-6 rounded-2xl bg-white shadow-card border-t-4 border-primary">
+          <div class="text-4xl mb-4">🏫</div>
+          <h3 class="font-display font-semibold text-xl mb-2">School Programs</h3>
+          <p class="text-muted text-sm mb-4">Assembly programs and classroom sessions that combine fun with learning</p>
+          <a href="#contact" class="text-primary font-medium hover:underline">Learn More →</a>
+        </div>
+        <div class="p-6 rounded-2xl bg-white shadow-card border-t-4 border-coral">
+          <div class="text-4xl mb-4">🧩</div>
+          <h3 class="font-display font-semibold text-xl mb-2">Special Education</h3>
+          <p class="text-muted text-sm mb-4">Adapted workshops designed for children with diverse learning needs</p>
+          <a href="#contact" class="text-coral font-medium hover:underline">Learn More →</a>
+        </div>
+        <div class="p-6 rounded-2xl bg-white shadow-card border-t-4 border-green">
+          <div class="text-4xl mb-4">🤝</div>
+          <h3 class="font-display font-semibold text-xl mb-2">NGO Events</h3>
+          <p class="text-muted text-sm mb-4">Community events and outreach programs for underserved communities</p>
+          <a href="#contact" class="text-green font-medium hover:underline">Learn More →</a>
+        </div>
+        <div class="p-6 rounded-2xl bg-white shadow-card border-t-4 border-yellow">
+          <div class="text-4xl mb-4">🎉</div>
+          <h3 class="font-display font-semibold text-xl mb-2">Festival Activations</h3>
+          <p class="text-muted text-sm mb-4">Eye-catching installations for festivals, malls, and corporate events</p>
+          <a href="#contact" class="text-yellow-600 font-medium hover:underline">Learn More →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-center mb-4">What People Say</h2>
+      <p class="text-muted text-center max-w-2xl mx-auto mb-12">Hear from schools and organizations we've worked with</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10">
+          <div class="flex items-center gap-1 text-yellow-400 mb-4">★★★★★</div>
+          <p class="text-foreground mb-4">"The children were absolutely mesmerized! It's rare to see such joy and engagement during a school event."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">👩</div>
+            <div>
+              <p class="font-semibold text-sm">Priya Sharma</p>
+              <p class="text-muted text-xs">Principal, Delhi Public School</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-coral/5 to-transparent border border-coral/10">
+          <div class="flex items-center gap-1 text-yellow-400 mb-4">★★★★★</div>
+          <p class="text-foreground mb-4">"AmbleBeats brought music to children who never had access to instruments. Truly transformative experience!"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-coral/20 flex items-center justify-center">👨</div>
+            <div>
+              <p class="font-semibold text-sm">Rajesh Kumar</p>
+              <p class="text-muted text-xs">Director, Hope Foundation NGO</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-green/5 to-transparent border border-green/10">
+          <div class="flex items-center gap-1 text-yellow-400 mb-4">★★★★★</div>
+          <p class="text-foreground mb-4">"Perfect for our special needs students. The inclusive design made everyone feel like a musician!"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-green/20 flex items-center justify-center">👩</div>
+            <div>
+              <p class="font-semibold text-sm">Anita Patel</p>
+              <p class="text-muted text-xs">Special Educator, Sunrise School</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 section-gradient">
+    <div class="container mx-auto px-4">
+      <h2 class="font-display text-3xl md:text-4xl font-bold text-center mb-4">Get In Touch</h2>
+      <p class="text-muted text-center max-w-2xl mx-auto mb-12">Ready to bring the walking piano experience to your organization?</p>
+      
+      <div class="max-w-2xl mx-auto">
+        <form class="bg-white rounded-2xl shadow-card p-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label class="block text-sm font-medium mb-2">Name</label>
+              <input type="text" placeholder="Your name" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Organization</label>
+              <input type="text" placeholder="School/NGO name" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label class="block text-sm font-medium mb-2">Email</label>
+              <input type="email" placeholder="your@email.com" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Phone</label>
+              <input type="tel" placeholder="+91 98765 43210" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors">
+            </div>
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-2">Event Type</label>
+            <select class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors">
+              <option>Select event type</option>
+              <option>School Assembly</option>
+              <option>Special Education Workshop</option>
+              <option>NGO Community Event</option>
+              <option>Festival/Corporate Event</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-2">Message</label>
+            <textarea placeholder="Tell us about your event..." rows="4" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors resize-none"></textarea>
+          </div>
+          <button type="submit" class="w-full btn-cta text-white py-4 rounded-xl font-semibold text-lg">
+            Send Message
+          </button>
+        </form>
+        
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
+          <a href="https://wa.me/919876543210" class="flex items-center gap-2 px-6 py-3 rounded-full bg-green text-white font-medium hover:bg-green/90 transition-colors">
+            💬 WhatsApp Us
+          </a>
+          <a href="mailto:hello@amblebeats.com" class="flex items-center gap-2 px-6 py-3 rounded-full border-2 border-primary text-primary font-medium hover:bg-primary/5 transition-colors">
+            ✉️ hello@amblebeats.com
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-foreground text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <a href="#home" class="flex items-center gap-2">
+          <img src="logo.jpg" alt="AmbleBeats Logo" class="h-16 w-auto rounded-lg">
+        </a>
+        <div class="flex items-center gap-6">
+          <a href="#home" class="text-white/70 hover:text-white transition-colors">Home</a>
+          <a href="#programs" class="text-white/70 hover:text-white transition-colors">Programs</a>
+          <a href="#contact" class="text-white/70 hover:text-white transition-colors">Contact</a>
+        </div>
+        <p class="text-white/50 text-sm">© 2024 AmbleBeats. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+
+    // Robot click interaction
+    const robot = document.getElementById('robot');
+    const speechBubble = document.getElementById('speechBubble');
+    
+    robot.addEventListener('click', () => {
+      speechBubble.style.opacity = '1';
+      robot.style.transform = 'scale(1.1)';
+      
+      setTimeout(() => {
+        speechBubble.style.opacity = '0';
+        robot.style.transform = 'scale(1)';
+      }, 1500);
+    });
+
+    // Eyes follow mouse
+    const robotContainer = document.getElementById('robotContainer');
+    const leftPupil = document.getElementById('leftPupil');
+    const rightPupil = document.getElementById('rightPupil');
+
+    robotContainer.addEventListener('mousemove', (e) => {
+      const rect = robotContainer.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      const deltaX = (e.clientX - centerX) / 30;
+      const deltaY = (e.clientY - centerY) / 30;
+      
+      const clampedX = Math.max(-5, Math.min(5, deltaX));
+      const clampedY = Math.max(-3, Math.min(3, deltaY));
+      
+      leftPupil.style.transform = `translate(${clampedX}px, ${clampedY}px)`;
+      rightPupil.style.transform = `translate(${clampedX}px, ${clampedY}px)`;
+    });
+
+    // Piano interaction with Web Audio API
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    const noteFrequencies = {
+      'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13,
+      'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00,
+      'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88,
+      'C5': 523.25
+    };
+
+    function playNote(frequency) {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.5);
+    }
+
+    const pianoKeys = document.querySelectorAll('.piano-key');
+    let lastPlayedNote = null;
+
+    pianoKeys.forEach(key => {
+      key.addEventListener('mouseenter', () => {
+        const note = key.dataset.note;
+        if (note !== lastPlayedNote) {
+          key.classList.add('active');
+          playNote(noteFrequencies[note]);
+          lastPlayedNote = note;
+        }
+      });
+
+      key.addEventListener('mouseleave', () => {
+        key.classList.remove('active');
+        lastPlayedNote = null;
+      });
+
+      key.addEventListener('click', () => {
+        const note = key.dataset.note;
+        playNote(noteFrequencies[note]);
+      });
+    });
+
+    // Resume audio context on user interaction
+    document.addEventListener('click', () => {
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }, { once: true });
+  </script>
+</body>
+</html>
