@@ -130,6 +130,16 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 .hero .music-box{left:78%;top:52%;right:auto;opacity:1!important;visibility:visible!important;display:block!important;z-index:28;}
 @media(max-width:800px){.hero .music-box{left:auto;right:5%;top:61%;width:min(130px,30vw);z-index:45;}}
 
+/* Hero scroll cue — centred at the bottom of the sticky stage, fades out once the next section arrives. */
+.scroll-cue{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);z-index:46;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 19px 10px;border:2px solid rgba(36,20,14,.1);border-radius:999px;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);color:var(--ink);font-size:11px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 14px 28px rgba(36,20,14,.1);transition:opacity .4s ease,visibility .4s ease,transform .3s ease}
+.scroll-cue svg{width:17px;height:17px;animation:cueBounce 1.9s ease-in-out infinite}
+.scroll-cue:hover{transform:translateX(-50%) translateY(3px)}
+.scroll-cue:focus-visible{outline:4px solid var(--pink);outline-offset:4px}
+.scroll-cue.gone{opacity:0;visibility:hidden;pointer-events:none;transform:translateX(-50%) translateY(16px)}
+@keyframes cueBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@media(max-width:800px){.scroll-cue{bottom:42px;padding:9px 14px 8px;gap:4px;font-size:9px;letter-spacing:.1em}.scroll-cue svg{width:13px;height:13px}}
+@media(prefers-reduced-motion:reduce){.scroll-cue svg{animation:none}}
+
 /* Small curved stabilizer feet for Setup 2 — replaces the oversized tripod/foot graphic. */
 .setup-stands .stand-feet{display:block;position:absolute;left:50%;bottom:0;width:88px;height:24px;transform:translateX(-50%);z-index:4;pointer-events:none;}
 .setup-stands .stand-feet:before{content:"";position:absolute;left:50%;top:7px;width:70px;height:13px;transform:translateX(-50%);border:6px solid #19100d;border-top:0;border-radius:0 0 50% 50%;box-sizing:border-box;background:transparent;box-shadow:0 2px 0 rgba(36,20,14,.12);}
@@ -581,6 +591,12 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 .interaction-welcome-close{position:absolute;top:12px;right:14px;width:38px;height:38px;border:0;background:transparent;color:var(--ink);border-radius:50%;font-size:23px;cursor:pointer;opacity:.48}
 .interaction-welcome-close:hover{opacity:1;background:rgba(36,20,14,.06)}
 @keyframes welcomePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07) rotate(-3deg)}}
+.interaction-welcome-steps{counter-reset:iw;list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0 0;padding:0}
+.interaction-welcome-steps li{counter-increment:iw;display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 5px 10px;border-radius:16px;background:#fff;border:1px solid rgba(36,20,14,.08)}
+.interaction-welcome-steps li:before{content:counter(iw);display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#ffb7cf;font-size:11px;font-weight:950;line-height:1}
+.iw-step-icon{font-size:17px;line-height:1}
+.iw-step-label{font-size:10px;font-weight:900;letter-spacing:.03em;text-transform:uppercase;opacity:.72;text-align:center;line-height:1.15}
+@media(max-width:520px){.interaction-welcome-steps{grid-template-columns:repeat(2,1fr);gap:7px}}
 @media(max-width:520px){.interaction-welcome{padding:18px}.interaction-welcome-card{padding:28px 21px 24px;border-radius:24px}.interaction-welcome-card p{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.interaction-welcome-icon{animation:none}.interaction-welcome{transition:none}}
 </style>
@@ -590,6 +606,12 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
     <div class="interaction-welcome-icon" aria-hidden="true">♪</div>
     <h2 id="interactionWelcomeTitle">This website is interactive!</h2>
     <p>Don’t just scroll — <strong>tap the characters</strong> to hear them play music and discover what Amble Beats can do.</p>
+    <ol class="interaction-welcome-steps">
+      <li><span class="iw-step-icon" aria-hidden="true">🔊</span><span class="iw-step-label">Sound on</span></li>
+      <li><span class="iw-step-icon" aria-hidden="true">⬇️</span><span class="iw-step-label">Scroll</span></li>
+      <li><span class="iw-step-icon" aria-hidden="true">👆</span><span class="iw-step-label">Tap</span></li>
+      <li><span class="iw-step-icon" aria-hidden="true">🎶</span><span class="iw-step-label">Play</span></li>
+    </ol>
     <button class="interaction-welcome-action" id="interactionWelcomeStart" type="button">🎵 Let’s Play</button>
   </div>
 </div>
@@ -625,6 +647,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 <div class="singer s9" data-kicker="RHYTHM + ENERGY" data-drum="tom1" data-sub="Finish the musical journey with a burst of rhythm that invites children to move, respond and play together." data-title="Turn energy into rhythm"><div class="face"><i class="eye"></i><i class="eye"></i></div></div>
 <div class="singer s10" data-kicker="MUSIC + JOY" data-drum="kick" data-sub="A final beat brings the whole experience together — movement, listening, timing and joyful participation." data-title="End on a musical high"><div class="face"><i class="eye"></i><i class="eye"></i></div></div>
 <div class="music-box" id="box"><div class="box-face"><div class="box-logo">INVENGIC</div><div class="speakers"><div class="speaker"></div><div class="speaker"></div></div><div class="ports"><i class="port"></i><i class="port"></i><i class="port"></i><i class="port"></i><i class="port"></i><i class="port"></i></div></div></div>
+<button class="scroll-cue" id="scrollCue" type="button" aria-label="Scroll down to the next scene"><span>Scroll</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5l7 7 7-7"/></svg></button>
 </div>
 
 </div>
@@ -794,12 +817,12 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
       <div class="learning-note">The same physical setup can support classroom concepts without turning the experience into a worksheet — children <strong>see, hear, move, remember and respond.</strong></div>
     </div>
     <div class="play-tabs" role="tablist" aria-label="Activity categories">
-      <button class="play-tab active" data-cat="all">✨ All</button>
-      <button class="play-tab" data-cat="create">🎵 Create</button>
+      <button class="play-tab active" data-cat="create">🎵 Create</button>
       <button class="play-tab" data-cat="think">🧠 Think</button>
       <button class="play-tab" data-cat="move">🏃 Move</button>
       <button class="play-tab" data-cat="together">👯 Together</button>
       <button class="play-tab" data-cat="discover">🌟 Discover</button>
+      <button class="play-tab" data-cat="all">✨ All</button>
     </div>
     <div class="activity-grid" id="activityGrid"></div>
     <div class="activity-detail" id="activityDetail" aria-live="polite">
@@ -977,7 +1000,21 @@ function playScrollDrum(index){
     if(stillVisible) playDrum(s.dataset.drum);
   });
 }
+const scrollCue=document.getElementById('scrollCue'),finaleEl=document.getElementById('finale');
+function updateScrollCue(){
+  if(!scrollCue||!finaleEl)return;
+  // Gone as soon as the section after the hero starts entering the viewport; comes back on the way up.
+  scrollCue.classList.toggle('gone',finaleEl.getBoundingClientRect().top<=window.innerHeight-1);
+}
+if(scrollCue&&finaleEl){
+  scrollCue.addEventListener('click',()=>{
+    // The hero stage is sticky, so any target inside the hero scrolls the window without
+    // moving anything on screen. Jump to the section below it — where the cue hides anyway.
+    window.scrollTo({top:finaleEl.getBoundingClientRect().top+window.scrollY,behavior:'smooth'});
+  });
+}
 function scrollUpdate(){
+  updateScrollCue();
   const max=hero.offsetHeight-window.innerHeight;
   const p=max>0?Math.max(0,Math.min(.999999,window.scrollY/max)):0;
   const idx=Math.min(9,Math.floor(p*10));
@@ -1004,6 +1041,7 @@ function scrollUpdate(){
 }
 window.addEventListener('scroll',scrollUpdate,{passive:true});window.addEventListener('resize',scrollUpdate,{passive:true});
 showScene(0,false);
+updateScrollCue();
 setTimeout(()=>{unlock().then(ok=>{if(ok&&!gestureSeen){triggerHero(0)}})},180);
 })();
 </script>
@@ -1098,10 +1136,10 @@ activities.forEach(a=>{a.objective=a.objective||detailDefaults.objective(a);a.se
 const labels={create:'CREATE',think:'THINK',move:'MOVE',together:'PLAY TOGETHER',discover:'DISCOVER'};
 const grid=document.getElementById('activityGrid'), detail=document.getElementById('activityDetail'), dt=document.getElementById('detailTitle'),dd=document.getElementById('detailDesc'),dc=document.getElementById('detailCat'),ds=document.getElementById('detailSteps');
 let currentGoal='all';
-function render(cat='all'){grid.innerHTML='';activities.filter(a=>(cat==='all'||a.c===cat)&&(currentGoal==='all'||a.g===currentGoal)).forEach((a)=>{const el=document.createElement('article');el.className='activity-card'+(a.school?' school-focus':'');el.innerHTML=`<div class="activity-icon">${a.i}</div><h3>${a.t}</h3><p>${a.d}</p><div class="activity-meta">${a.m.map(x=>`<span>${x}</span>`).join('')}</div>${a.school?'<span class="school-badge">🏫 Learning activity</span>':''}`;el.addEventListener('click',()=>show(a));grid.appendChild(el)});document.querySelectorAll('.play-tab').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat))}
+function render(cat='create'){grid.innerHTML='';activities.filter(a=>(cat==='all'||a.c===cat)&&(currentGoal==='all'||a.g===currentGoal)).forEach((a)=>{const el=document.createElement('article');el.className='activity-card'+(a.school?' school-focus':'');el.innerHTML=`<div class="activity-icon">${a.i}</div><h3>${a.t}</h3><p>${a.d}</p><div class="activity-meta">${a.m.map(x=>`<span>${x}</span>`).join('')}</div>${a.school?'<span class="school-badge">🏫 Learning activity</span>':''}`;el.addEventListener('click',()=>show(a));grid.appendChild(el)});document.querySelectorAll('.play-tab').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat))}
 function show(a){dc.textContent=labels[a.c];dt.textContent=a.t;dd.textContent=a.d;ds.innerHTML=a.st.map((x,i)=>`<span>${i+1}. ${x}</span>`).join('');detail.querySelector('.detail-more')?.remove();detail.querySelector('.detail-prompts')?.remove();const more=document.createElement('div');more.className='detail-more';more.innerHTML=`<div class="detail-box"><b>Learning goal</b><span>${a.objective}</span></div><div class="detail-box"><b>Setup</b><span>${a.setup}</span></div><div class="detail-box"><b>Try another way</b><span>${a.variation}</span></div><div class="detail-box"><b>What children practise</b><span>${a.outcome}</span></div>`;ds.parentElement.appendChild(more);const prompt=document.createElement('div');prompt.className='detail-prompts';prompt.innerHTML=`<strong>Teacher prompts</strong><br>${a.prompt}`;ds.parentElement.appendChild(prompt);detail.classList.add('show');detail.scrollIntoView({behavior:'smooth',block:'nearest'})}
 function surprise(){show(activities[Math.floor(Math.random()*activities.length)])}
-document.querySelectorAll('.goal-btn').forEach(b=>b.addEventListener('click',()=>{currentGoal=b.dataset.goal;document.querySelectorAll('.goal-btn').forEach(x=>x.classList.toggle('active',x===b));render(document.querySelector('.play-tab.active')?.dataset.cat||'all')}));
+document.querySelectorAll('.goal-btn').forEach(b=>b.addEventListener('click',()=>{currentGoal=b.dataset.goal;document.querySelectorAll('.goal-btn').forEach(x=>x.classList.toggle('active',x===b));render(document.querySelector('.play-tab.active')?.dataset.cat||'create')}));
 document.querySelectorAll('.featured-activity').forEach(el=>el.addEventListener('click',()=>{const title=el.querySelector('b').textContent.replace(/^\S+\s/,'');const a=activities.find(x=>x.t.toLowerCase()===title.toLowerCase());if(a)show(a)}));
 document.querySelectorAll('.play-tab').forEach(b=>b.addEventListener('click',()=>render(b.dataset.cat)));
 document.getElementById('mainSurprise').addEventListener('click',surprise);document.getElementById('surpriseBtn').addEventListener('click',surprise);render();
