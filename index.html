@@ -1136,10 +1136,26 @@ activities.forEach(a=>{a.objective=a.objective||detailDefaults.objective(a);a.se
 const labels={create:'CREATE',think:'THINK',move:'MOVE',together:'PLAY TOGETHER',discover:'DISCOVER'};
 const grid=document.getElementById('activityGrid'), detail=document.getElementById('activityDetail'), dt=document.getElementById('detailTitle'),dd=document.getElementById('detailDesc'),dc=document.getElementById('detailCat'),ds=document.getElementById('detailSteps');
 let currentGoal='all';
-function render(cat='create'){grid.innerHTML='';activities.filter(a=>(cat==='all'||a.c===cat)&&(currentGoal==='all'||a.g===currentGoal)).forEach((a)=>{const el=document.createElement('article');el.className='activity-card'+(a.school?' school-focus':'');el.innerHTML=`<div class="activity-icon">${a.i}</div><h3>${a.t}</h3><p>${a.d}</p><div class="activity-meta">${a.m.map(x=>`<span>${x}</span>`).join('')}</div>${a.school?'<span class="school-badge">🏫 Learning activity</span>':''}`;el.addEventListener('click',()=>show(a));grid.appendChild(el)});document.querySelectorAll('.play-tab').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat))}
+function matches(cat){return activities.filter(a=>(cat==='all'||a.c===cat)&&(currentGoal==='all'||a.g===currentGoal))}
+function render(cat='create'){grid.innerHTML='';matches(cat).forEach((a)=>{const el=document.createElement('article');el.className='activity-card'+(a.school?' school-focus':'');el.innerHTML=`<div class="activity-icon">${a.i}</div><h3>${a.t}</h3><p>${a.d}</p><div class="activity-meta">${a.m.map(x=>`<span>${x}</span>`).join('')}</div>${a.school?'<span class="school-badge">🏫 Learning activity</span>':''}`;el.addEventListener('click',()=>show(a));grid.appendChild(el)});document.querySelectorAll('.play-tab').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat))}
 function show(a){dc.textContent=labels[a.c];dt.textContent=a.t;dd.textContent=a.d;ds.innerHTML=a.st.map((x,i)=>`<span>${i+1}. ${x}</span>`).join('');detail.querySelector('.detail-more')?.remove();detail.querySelector('.detail-prompts')?.remove();const more=document.createElement('div');more.className='detail-more';more.innerHTML=`<div class="detail-box"><b>Learning goal</b><span>${a.objective}</span></div><div class="detail-box"><b>Setup</b><span>${a.setup}</span></div><div class="detail-box"><b>Try another way</b><span>${a.variation}</span></div><div class="detail-box"><b>What children practise</b><span>${a.outcome}</span></div>`;ds.parentElement.appendChild(more);const prompt=document.createElement('div');prompt.className='detail-prompts';prompt.innerHTML=`<strong>Teacher prompts</strong><br>${a.prompt}`;ds.parentElement.appendChild(prompt);detail.classList.add('show');detail.scrollIntoView({behavior:'smooth',block:'nearest'})}
 function surprise(){show(activities[Math.floor(Math.random()*activities.length)])}
-document.querySelectorAll('.goal-btn').forEach(b=>b.addEventListener('click',()=>{currentGoal=b.dataset.goal;document.querySelectorAll('.goal-btn').forEach(x=>x.classList.toggle('active',x===b));render(document.querySelector('.play-tab.active')?.dataset.cat||'create')}));
+const tabsRow=document.querySelector('.play-tabs'),navBar=document.querySelector('.nav');
+function scrollToTabs(){
+  if(!tabsRow)return;
+  // The nav is fixed, so its rect stays put — use it to clear the sticky header.
+  const clear=navBar?navBar.getBoundingClientRect().bottom+16:100;
+  window.scrollTo({top:tabsRow.getBoundingClientRect().top+window.scrollY-clear,behavior:'smooth'});
+}
+document.querySelectorAll('.goal-btn').forEach(b=>b.addEventListener('click',()=>{
+  currentGoal=b.dataset.goal;
+  document.querySelectorAll('.goal-btn').forEach(x=>x.classList.toggle('active',x===b));
+  let cat=document.querySelector('.play-tab.active')?.dataset.cat||'create';
+  // This goal has nothing in the current category, so widen to All rather than show an empty grid.
+  if(!matches(cat).length)cat='all';
+  render(cat);
+  scrollToTabs();
+}));
 document.querySelectorAll('.featured-activity').forEach(el=>el.addEventListener('click',()=>{const title=el.querySelector('b').textContent.replace(/^\S+\s/,'');const a=activities.find(x=>x.t.toLowerCase()===title.toLowerCase());if(a)show(a)}));
 document.querySelectorAll('.play-tab').forEach(b=>b.addEventListener('click',()=>render(b.dataset.cat)));
 document.getElementById('mainSurprise').addEventListener('click',surprise);document.getElementById('surpriseBtn').addEventListener('click',surprise);render();
