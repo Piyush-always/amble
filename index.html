@@ -71,7 +71,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 }
 
 /* === interactive setup sections === */
-.hero{height:300vh}
+.hero{height:440vh}
 .setup-showcase{position:relative;min-height:980px;padding:90px 24px 120px;background:linear-gradient(180deg,#fffaf0 0%,#fff7ef 100%);overflow:hidden}
 .setup-showcase + .setup-showcase{border-top:10px solid #fff}
 .setup-head{position:relative;z-index:10;max-width:920px;margin:0 auto 34px;text-align:center}
@@ -130,78 +130,6 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 /* Music box stays in the sticky hero scene for every one of the 10 plays. */
 .hero .music-box{left:78%;top:52%;right:auto;opacity:1!important;visibility:visible!important;display:block!important;z-index:28;}
 @media(max-width:800px){.hero .music-box{left:auto;right:5%;top:61%;width:min(130px,30vw);z-index:45;}}
-
-/* === hero lead column + product film ===
-   --filmw drives the film card and everything anchored to it, so the character and
-   box track the card's corners at every width instead of drifting on wide screens.
-   Card height = --filmw * .5625 (16:9), so half its height = --filmw * .28125. */
-.hero{--filmw:min(720px,52vw)}
-/* Character straddles the film's top-left corner; the 290px floor keeps its ears
-   clear of the fixed nav on short viewports. Box hugs the bottom-right corner. */
-.hero .singer{left:calc(100% - 4vw - var(--filmw) + 12px);top:max(calc(50% - var(--filmw)*.28125 + 72px),290px);width:min(16vw,200px);height:min(16vw,200px)}
-.hero .singer:before,.hero .singer:after{top:-45px;width:40px;height:54px}
-.hero .music-box{left:calc(100% - 4vw - 52px);top:calc(50% + var(--filmw)*.28125 - 34px);width:min(184px,14vw)}
-@media(max-width:1280px) and (min-width:801px){.hero .singer{left:calc(100% - 4vw - var(--filmw) + 56px)}}
-@media(max-height:820px) and (min-width:801px){.hero .singer{width:min(17vw,220px);height:min(17vw,220px)}}
-/* Shorter box: the hero copy only needs it read as the product, not at full detail. */
-.hero .music-box .box-face{padding:17px 19px 13px;border-radius:22px;box-shadow:0 14px 0 rgba(36,20,14,.07)}
-.hero .music-box .box-logo{font-size:21px}
-.hero .music-box .speakers{gap:15px;margin:14px 0 10px}
-.hero .music-box .speaker{width:52px;height:44px;border-radius:11px}
-.hero .music-box .speaker:after{left:14px;right:14px;top:21px;height:4px}
-.hero .music-box .port{width:10px;height:10px}
-@media(max-width:1440px){
- /* Tighter screens can't fit lead + character + film at full size. */
- .hero .singer{width:min(16vw,190px);height:min(16vw,190px)}
- .hero .singer:before,.hero .singer:after{top:-45px;width:40px;height:54px}
-}
-
-.hero-lead{position:absolute;left:5vw;top:50%;transform:translateY(-50%);z-index:30;width:min(392px,31vw)}
-.hero-eyebrow{display:inline-block;padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.86);border:1px solid rgba(36,20,14,.1);font-size:10px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;opacity:.75;margin-bottom:16px}
-.hero-eyebrow b{color:var(--pink);font-weight:950}
-.hero-h1{margin:0;font-size:clamp(30px,3.4vw,50px);line-height:.93;letter-spacing:-.065em}
-.hero-h1 span{color:var(--pink)}
-.hero-lead .scene-copy{position:static;transform:none;left:auto;top:auto;width:auto;margin-top:22px;padding-top:18px;border-top:2px solid rgba(36,20,14,.09)}
-.hero-lead .scene-title{font-size:clamp(19px,1.7vw,25px);line-height:1.04;letter-spacing:-.045em}
-.hero-lead .scene-sub{font-size:14px;line-height:1.38;margin-top:9px;max-width:340px}
-.hero-ctas{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
-.hero-cta-primary,.hero-cta-ghost{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:13px 21px;font-size:14px;font-weight:900;white-space:nowrap}
-.hero-cta-primary{background:var(--ink);color:#fff;border:2px solid var(--ink)}
-.hero-cta-ghost{background:#fff;color:var(--ink);border:2px solid rgba(36,20,14,.14)}
-.hero-cta-ghost:hover{border-color:var(--ink)}
-.hero-cta-primary:focus-visible,.hero-cta-ghost:focus-visible{outline:4px solid var(--pink);outline-offset:3px}
-
-.hero-video{position:absolute;right:4vw;top:50%;transform:translateY(-50%);z-index:15;width:var(--filmw);aspect-ratio:16/9;border:4px solid var(--ink);border-radius:32px;overflow:hidden;background:#18100c;box-shadow:0 26px 0 rgba(36,20,14,.07),0 40px 70px rgba(36,20,14,.17)}
-.hero-video-play{display:block;width:100%;height:100%;padding:0;border:0;background:#18100c;position:relative}
-.hero-video-play img{width:100%;height:100%;object-fit:cover;display:block;opacity:.93;transition:opacity .35s ease,transform .6s cubic-bezier(.16,.84,.22,1)}
-.hero-video-play:hover img{opacity:1;transform:scale(1.035)}
-.hero-video-btn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:78px;height:78px;padding-left:5px;border-radius:50%;border:4px solid var(--ink);background:var(--pink);color:var(--ink);display:grid;place-items:center;font-size:24px;box-shadow:0 10px 0 rgba(36,20,14,.18);transition:transform .25s cubic-bezier(.16,.84,.22,1)}
-.hero-video-play:hover .hero-video-btn{transform:translate(-50%,-50%) scale(1.09)}
-.hero-video-play:focus-visible{outline:4px solid var(--pink);outline-offset:-6px}
-.hero-video-label{position:absolute;left:19px;right:19px;bottom:16px;text-align:left;color:#fff;font-size:12px;font-weight:900;letter-spacing:.04em;text-shadow:0 2px 14px rgba(0,0,0,.65)}
-.hero-video iframe{display:block;width:100%;height:100%;border:0}
-.hero-video-close{position:absolute;right:11px;top:11px;z-index:3;width:36px;height:36px;display:grid;place-items:center;border:2px solid var(--ink);border-radius:50%;background:#fff;color:var(--ink);font-size:15px;font-weight:900;box-shadow:0 6px 0 rgba(36,20,14,.16)}
-.hero-video-close:focus-visible{outline:4px solid var(--pink);outline-offset:3px}
-
-@media(max-width:800px){
- /* Stage is only 100vh on phones — the lead stacks at the top, film sits mid-stage,
-    and the character/box drop below it. Tune these four values together. */
- .hero-lead{left:50%;right:auto;top:76px;transform:translateX(-50%);width:92vw;text-align:center}
- .hero-eyebrow{font-size:8px;letter-spacing:.06em;padding:5px 10px;margin-bottom:9px}
- .hero-h1{font-size:clamp(21px,6vw,30px)}
- .hero-lead .scene-copy{margin-top:11px;padding-top:0;border-top:0}
- .hero-lead .scene-title{font-size:clamp(15px,4.2vw,20px)}
- .hero-lead .scene-sub{display:none}
- .hero-ctas{justify-content:center;gap:7px;margin-top:13px}
- .hero-cta-primary,.hero-cta-ghost{padding:10px 15px;font-size:12px}
- .hero-video{left:50%;right:auto;top:42%;bottom:auto;transform:translateX(-50%);width:66vw;border-width:3px;border-radius:18px;box-shadow:0 10px 0 rgba(36,20,14,.07)}
- .hero-video-btn{width:50px;height:50px;font-size:16px;border-width:3px;box-shadow:0 6px 0 rgba(36,20,14,.18)}
- .hero-video-label{font-size:9px;left:11px;right:11px;bottom:9px}
- .hero-video-close{width:29px;height:29px;font-size:12px;right:8px;top:8px}
- .hero .singer{left:33%;top:72%;width:min(33vw,146px);height:min(33vw,146px)}
- .hero .singer:before,.hero .singer:after{top:-27px;width:25px;height:33px;border-width:5px}
- .hero .music-box{left:auto;right:5%;top:72%;width:min(112px,26vw)}
-}
 
 /* Hero scroll cue — centred at the bottom of the sticky stage, fades out once the next section arrives. */
 .scroll-cue{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);z-index:46;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 19px 10px;border:2px solid rgba(36,20,14,.1);border-radius:999px;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);color:var(--ink);font-size:11px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 14px 28px rgba(36,20,14,.1);transition:opacity .4s ease,visibility .4s ease,transform .3s ease}
@@ -704,19 +632,23 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 
 <nav class="nav"><div class="brand">amble <b>beats</b></div><div class="navlinks"><a href="#top">Home</a><a href="#how-it-works">How it works</a><a href="#setups">Setups</a><a href="#ways-to-play">Activities</a><a href="#applications">Applications</a><a href="#contact">Contact</a></div><div style="display:flex;gap:8px;align-items:center"><a class="plan-top" href="#ways-to-play">Plan an Activity</a><a class="quote" href="mailto:sales@invengic.in?subject=Amble%20Beats%20Demo&body=Hello%20Invengic%2C%0A%0AI%20would%20like%20to%20book%20a%20demo%20of%20Amble%20Beats.%0A%0AName%3A%0ASchool%2FOrganisation%3A%0ACity%3A%0APhone%3A" aria-label="Email Invengic to book an Amble Beats demo">Book a Demo</a></div></nav>
 <main>
-<section class="hero" id="top">
+<section class="video-section" id="top">
+  <div class="sales-inner">
+    <div class="sales-kicker">See Amble Beats in action</div>
+    <h2 class="sales-title">Turning your movement<br>into melodies.</h2>
+    <p class="sales-lead">A real-world interactive experience where children move, listen, explore and create sound together.</p>
+    <div class="video-embed" aria-label="Amble Beats product video">
+      <iframe src="https://www.youtube-nocookie.com/embed/1GSJ7ImbAH4?rel=0&amp;modestbranding=1" title="Amble Beats — Product Experience" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+    <div class="video-caption"><strong>Amble Beats — Product Experience</strong><span>Product film</span></div>
+  </div>
+</section>
+
+<section class="hero" id="hero">
 <div class="stage" id="stage">
 <div class="glow"></div>
 <div class="progress" id="progress"></div>
-<div class="hero-lead">
-<div class="hero-eyebrow"><b>Amble Beats</b> · Built at IIT Gandhinagar Research Park</div>
-<h1 class="hero-h1">An interactive <span>music playground</span> for your school.</h1>
-<div class="scene-copy"><div class="scene-kicker" id="kicker"></div><h2 class="scene-title" id="title"></h2><div class="scene-sub" id="sub"></div></div>
-<div class="hero-ctas"><a class="hero-cta-primary" href="mailto:sales@invengic.in?subject=Amble%20Beats%20Demo&amp;body=Hello%20Invengic%2C%0A%0AI%20would%20like%20to%20book%20a%20demo%20of%20Amble%20Beats.%0A%0AName%3A%0ASchool%2FOrganisation%3A%0ACity%3A%0APhone%3A">Book a Demo</a><button class="hero-cta-ghost" id="heroWatch" type="button"><span aria-hidden="true">▶</span> Watch the film</button></div>
-</div>
-<div class="hero-video" id="heroVideo">
-<button class="hero-video-play" type="button" aria-label="Play the Amble Beats product film"><img src="https://i.ytimg.com/vi/IcvXNFbRvZc/maxresdefault.jpg" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/IcvXNFbRvZc/hqdefault.jpg'" alt="" width="1280" height="720" decoding="async"><span class="hero-video-btn" aria-hidden="true">▶</span><span class="hero-video-label">Watch the product film</span></button>
-</div>
+<div class="scene-copy"><div class="scene-kicker" id="kicker"></div><h1 class="scene-title" id="title"></h1><div class="scene-sub" id="sub"></div></div>
 <div class="singer s1" data-kicker="BRAIN + BODY" data-note="C4" data-sub="Movement, sound and instant feedback create an active play experience designed to engage young minds." data-title="Wake up the whole mind"><div class="face"><i class="eye"></i><i class="eye"></i></div></div>
 <div class="singer s2" data-kicker="ATTENTION + LISTENING" data-note="D4" data-sub="Children listen, react and stay curious as every action creates an immediate musical response." data-title="Make attention feel fun"><div class="face"><i class="eye"></i><i class="eye"></i></div></div>
 <div class="singer s3" data-kicker="PATTERNS + MEMORY" data-note="E4" data-sub="Repeating sounds and sequences invite children to notice patterns, remember them and play again." data-title="Turn patterns into play"><div class="face"><i class="eye"></i><i class="eye"></i></div></div>
@@ -735,7 +667,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 </section><div class="finale finale-flow" id="finale">
 <div class="value-intro flow-value-intro" id="valueIntro">
 <div class="value-kicker">Amble Beats by Invengic</div>
-<h2>Turning your movement <span>into melodies.</span></h2>
+<h2>Movement becomes <span>music.</span></h2>
 <p class="value-lead">One interactive installation that turns active play into an experience children can hear, feel and remember — bringing movement, music and discovery into the heart of your school.</p>
 <div class="value-points">
 <span class="value-pill">Brain + body engagement</span><span class="value-pill">Attention &amp; listening</span><span class="value-pill">Memory &amp; patterns</span><span class="value-pill">Confidence through play</span><span class="value-pill">Sensory exploration</span><span class="value-pill">Creative active learning</span>
@@ -854,7 +786,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
     <h2 class="sales-title">See how it works.</h2>
     <p class="sales-lead">A closer look at the interaction, the system and the two ways Amble Beats can be configured.</p>
     <div class="video-embed" aria-label="Amble Beats how it works video">
-      <iframe src="https://www.youtube-nocookie.com/embed/1GSJ7ImbAH4?rel=0&modestbranding=1" title="Amble Beats — How It Works" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      <iframe src="https://www.youtube-nocookie.com/embed/IcvXNFbRvZc?rel=0&modestbranding=1" title="Amble Beats — How It Works" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
     <div class="video-caption"><strong>How Amble Beats Works</strong><span>Explainer video</span></div>
   </div>
@@ -1006,9 +938,9 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 (()=>{
 'use strict';
 const AudioCtx=window.AudioContext||window.webkitAudioContext;
-let ctx=null,lastSound=0,activeIndex=-1,gestureSeen=false,filmPlaying=false;
+let ctx=null,lastSound=0,activeIndex=-1,gestureSeen=false;
 const notes={C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392,A4:440,B4:493.88,C5:523.25};
-const hero=document.getElementById('top'),stage=document.getElementById('stage'),box=document.getElementById('box');
+const hero=document.getElementById('hero'),stage=document.getElementById('stage'),box=document.getElementById('box');
 const chars=[...document.querySelectorAll('.hero .singer')];
 const progress=document.getElementById('progress'), kicker=document.getElementById('kicker'), title=document.getElementById('title'), sub=document.getElementById('sub');
 for(let i=0;i<10;i++){const d=document.createElement('i');progress.appendChild(d)}
@@ -1035,8 +967,8 @@ function createNoise(dur,type='white'){
   for(let i=0;i<d.length;i++){const t=i/d.length; d[i]=(Math.random()*2-1)*Math.pow(1-t, type==='crash'?0.75:1.35)}
   return b;
 }
-function playNote(note){const c=ctx;if(!c||c.state!=='running'||filmPlaying)return false;const now=c.currentTime;if(now-lastSound<.055)return false;lastSound=now;const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(notes[note]||440,now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.28,now+.012);g.gain.exponentialRampToValueAtTime(.0001,now+.42);o.connect(g);g.connect(master);o.start();o.stop(now+.44);return true}
-function playDrum(type){const c=ctx;if(!c||c.state!=='running'||filmPlaying)return false;const now=c.currentTime;if(now-lastSound<.045)return false;lastSound=now;
+function playNote(note){const c=ctx;if(!c||c.state!=='running')return false;const now=c.currentTime;if(now-lastSound<.055)return false;lastSound=now;const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(notes[note]||440,now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.28,now+.012);g.gain.exponentialRampToValueAtTime(.0001,now+.42);o.connect(g);g.connect(master);o.start();o.stop(now+.44);return true}
+function playDrum(type){const c=ctx;if(!c||c.state!=='running')return false;const now=c.currentTime;if(now-lastSound<.045)return false;lastSound=now;
   if(type==='kick'||type==='tom1'||type==='tom2'){const base=type==='kick'?150:type==='tom1'?180:125;const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(base,now);o.frequency.exponentialRampToValueAtTime(type==='kick'?52:70,now+.16);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.55,now+.006);g.gain.exponentialRampToValueAtTime(.0001,now+.26);o.connect(g);g.connect(master);o.start();o.stop(now+.28);return true}
   if(type==='hihat'||type==='shaker'||type==='crash'){const dur=type==='crash'?.7:type==='shaker'?.18:.12,b=createNoise(dur,type==='crash'?'crash':'white'),n=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();f.type='highpass';f.frequency.setValueAtTime(type==='crash'?1800:5000,now);g.gain.setValueAtTime(type==='crash'?.18:.22,now);g.gain.exponentialRampToValueAtTime(.0001,now+dur);n.buffer=b;n.connect(f);f.connect(g);g.connect(master);n.start();n.stop(now+dur);return true}
   if(type==='snare'){const b=createNoise(.22,'white'),n=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();f.type='bandpass';f.frequency.setValueAtTime(1800,now);f.Q.value=.7;g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.42,now+.005);g.gain.exponentialRampToValueAtTime(.0001,now+.2);n.buffer=b;n.connect(f);f.connect(g);g.connect(master);n.start();n.stop(now+.22);const o=c.createOscillator(),og=c.createGain();o.type='triangle';o.frequency.setValueAtTime(190,now);og.gain.setValueAtTime(.0001,now);og.gain.exponentialRampToValueAtTime(.18,now+.005);og.gain.exponentialRampToValueAtTime(.0001,now+.11);o.connect(og);og.connect(master);o.start();o.stop(now+.12);return true}
@@ -1103,35 +1035,6 @@ function playScrollDrum(index){
     if(stillVisible) playDrum(s.dataset.drum);
   });
 }
-const heroVideo=document.getElementById('heroVideo'),heroWatch=document.getElementById('heroWatch');
-const FILM_ID='IcvXNFbRvZc',FILM_TITLE='Amble Beats — Product Experience';
-const filmFacade=heroVideo?heroVideo.innerHTML:'';
-function playFilm(){
-  if(!heroVideo||filmPlaying)return;
-  const f=document.createElement('iframe');
-  f.src='https://www.youtube-nocookie.com/embed/'+FILM_ID+'?rel=0&modestbranding=1&autoplay=1';
-  f.title=FILM_TITLE;
-  f.setAttribute('allow','autoplay; encrypted-media; picture-in-picture; web-share');
-  f.setAttribute('allowfullscreen','');
-  const x=document.createElement('button');
-  x.className='hero-video-close';x.type='button';x.textContent='✕';
-  x.setAttribute('aria-label','Close the film');
-  heroVideo.replaceChildren(f,x);
-  filmPlaying=true; // the hero's own notes stay quiet while the film holds the audio
-}
-function stopFilm(){
-  if(!heroVideo||!filmPlaying)return;
-  heroVideo.innerHTML=filmFacade; // removing the iframe is what actually stops playback
-  filmPlaying=false;
-}
-if(heroVideo){
-  // Delegated, so it survives swapping the facade out for the iframe and back.
-  heroVideo.addEventListener('click',e=>{
-    if(e.target.closest('.hero-video-close')){stopFilm();return}
-    if(e.target.closest('.hero-video-play'))playFilm();
-  });
-}
-if(heroWatch)heroWatch.addEventListener('click',playFilm);
 const scrollCue=document.getElementById('scrollCue'),finaleEl=document.getElementById('finale');
 function updateScrollCue(){
   if(!scrollCue||!finaleEl)return;
@@ -1148,7 +1051,7 @@ if(scrollCue&&finaleEl){
 function scrollUpdate(){
   updateScrollCue();
   const max=hero.offsetHeight-window.innerHeight;
-  const p=max>0?Math.max(0,Math.min(.999999,window.scrollY/max)):0;
+  const p=max>0?Math.max(0,Math.min(.999999,(window.scrollY-hero.offsetTop)/max)):0;
   const idx=Math.min(9,Math.floor(p*10));
   if(idx!==activeIndex){
     const first=activeIndex<0; activeIndex=idx; showScene(idx,!first);
