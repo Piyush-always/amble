@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<title>Amble Beats for Health — Invengic</title>
+<meta content="Amble Beats for health — the same interactive movement-and-sound system, designed for physiotherapy, rehabilitation, occupational therapy and sensory play sessions." name="description"/>
+<style>
+:root{--ink:#24140e;--cream:#fffaf0;--pink:#ff5a9a;--purple:#9b72f2;--blue:#20aee8;--green:#43d978;--yellow:#ffd21e;--orange:#ff8638}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
+section[id]{scroll-margin-top:96px}
+
+/* Nav — same as index.html */
+.nav{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:100;width:min(1180px,calc(100% - 32px));padding:10px 14px 10px 24px;border:2px solid rgba(36,20,14,.08);background:rgba(255,255,255,.78);backdrop-filter:blur(18px);border-radius:999px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-size:27px;font-weight:950;letter-spacing:-.07em}.brand b{color:var(--pink)}
+.navlinks{display:flex;gap:24px;font-size:14px;font-weight:800;opacity:.68}
+.navlinks a.current{color:var(--pink)}
+.quote{border:0;border-radius:999px;background:var(--ink);color:#fff;padding:13px 22px;font-weight:900}
+.plan-top{border:2px solid var(--ink);border-radius:999px;background:#ffd95b;color:var(--ink);padding:11px 16px;font-weight:950;font-size:13px;box-shadow:0 4px 0 rgba(36,20,14,.12)}
+.plan-top:hover{transform:translateY(-2px)}
+
+/* Section primitives — same as index.html */
+.sales-section{padding:110px 24px;background:#fffaf0}
+.sales-inner{width:min(1120px,100%);margin:auto}
+.sales-kicker{font-size:11px;font-weight:950;letter-spacing:.16em;text-transform:uppercase;opacity:.5;margin-bottom:13px}
+.sales-title{margin:0;font-size:clamp(40px,6vw,76px);line-height:.9;letter-spacing:-.07em}
+.sales-title span{color:var(--pink)}
+.sales-lead{max-width:760px;font-size:clamp(16px,1.7vw,21px);line-height:1.5;opacity:.68;margin:18px 0 0}
+.feature-grid,.flow-grid,.application-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
+.application-grid.three{grid-template-columns:repeat(3,1fr)}
+.feature-card,.flow-card,.application-card{background:#fff;border:1px solid rgba(36,20,14,.08);border-radius:22px;padding:24px}
+.feature-card{min-height:145px}
+.feature-card b{display:block;font-size:18px;margin-bottom:9px}
+.feature-card p,.application-card p,.flow-card p{margin:0;font-size:14px;line-height:1.45;opacity:.62}
+.flow-card .num{font-size:11px;font-weight:950;opacity:.4}
+.flow-card h3{margin:13px 0 7px;font-size:20px}
+.application-card h3{margin:0 0 8px;font-size:21px}
+.invengic-band{background:#24140e;color:#fff;padding:90px 24px}
+.invengic-band .sales-kicker{opacity:.5}
+.invengic-band .sales-lead{opacity:.7}
+
+/* Hero */
+.health-hero{padding:150px 24px 90px;text-align:center;background:radial-gradient(circle at 50% 12%,#fff 0,rgba(255,250,240,.94) 48%,rgba(255,229,237,.76) 100%)}
+.hero-kicker{font-size:12px;font-weight:950;letter-spacing:.18em;text-transform:uppercase;opacity:.5;margin-bottom:14px}
+.health-hero h1{margin:0 auto;max-width:1100px;font-size:clamp(46px,7.6vw,104px);line-height:.87;letter-spacing:-.075em}
+.health-hero h1 span{display:block;color:var(--pink)}
+.hero-lead{max-width:860px;font-size:clamp(17px,2vw,23px);line-height:1.42;margin:24px auto 0;opacity:.72}
+.value-points{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:26px auto 0;max-width:1000px}
+.value-pill{padding:10px 15px;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid rgba(36,20,14,.09);font-size:12px;font-weight:850}
+.hero-ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:30px}
+.btn-dark,.btn-pink{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:14px 24px;border-radius:999px;font-weight:950;border:3px solid var(--ink);box-shadow:0 6px 0 rgba(36,20,14,.14);transition:transform .18s ease}
+.btn-dark{background:var(--ink);color:#fff}.btn-pink{background:#ffb7cf;color:var(--ink)}
+.btn-dark:hover,.btn-pink:hover{transform:translateY(-2px)}
+
+/* Interactive cue demo — reuses the Setup 1 character look */
+.demo-wrap{width:min(1180px,100%);margin:56px auto 0}
+.setup-canvas{position:relative;width:100%;height:560px;border-radius:42px;background:radial-gradient(circle at 50% 44%,rgba(255,255,255,.98) 0 17%,transparent 48%),linear-gradient(180deg,#fffdfa 0%,#fff3e9 100%);box-shadow:0 30px 80px rgba(36,20,14,.09);overflow:hidden}
+.setup-halo{position:absolute;left:50%;top:38%;width:520px;height:520px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,210,222,.36),rgba(255,255,255,0));filter:blur(2px)}
+.cable-svg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.cable-svg path{fill:none;stroke:#19100d;stroke-width:3.4;stroke-linecap:round;opacity:.84}
+.setup-box{position:absolute;left:50%;top:36%;transform:translate(-50%,-50%);width:250px;z-index:6;filter:drop-shadow(0 28px 24px rgba(36,20,14,.15))}
+.setup-box-face{background:#fff;border:4px solid var(--ink);border-radius:30px;padding:24px 24px 20px;box-shadow:0 18px 0 rgba(36,20,14,.07)}
+.box-logo{text-align:center;font-size:27px;font-weight:1000;letter-spacing:-.065em}
+.speakers{display:flex;gap:22px;justify-content:center;margin:22px 0 16px}
+.speaker{width:62px;height:54px;border-radius:15px;background:#18100c;position:relative}
+.speaker:after{content:"";position:absolute;left:18px;right:18px;top:25px;height:5px;background:#ffd95b;border-radius:5px}
+.ports{display:flex;justify-content:space-between;gap:6px}
+.port{width:13px;height:13px;border-radius:50%;background:var(--orange)}
+.setup-box.playing{animation:setupBoxVibe .48s ease-out}
+.setup-box.playing .speaker{animation:speakerPulse .48s ease-out}
+.setup-sensor{appearance:none;isolation:isolate;border:0;padding:0;position:absolute;top:76%;width:104px;height:104px;margin-left:-52px;border:6px solid var(--ink);border-radius:31% 31% 28% 28%;display:grid;place-items:center;box-shadow:0 25px 30px rgba(36,20,14,.17);z-index:9;cursor:pointer;outline:none;touch-action:manipulation;animation:setupFloat 4.8s ease-in-out infinite;transform:translateZ(0)}
+.setup-sensor:before,.setup-sensor:after{content:"";position:absolute;top:-28px;width:24px;height:32px;background:inherit;border:6px solid var(--ink);border-bottom:0;border-radius:14px 14px 0 0}
+.setup-sensor:before{left:12%}.setup-sensor:after{right:12%}
+.setup-sensor:focus-visible{outline:4px solid var(--pink);outline-offset:5px}
+.setup-sensor.active{animation:setupTap .52s ease-out}
+.setup-sensor.target{box-shadow:0 0 0 8px rgba(255,255,255,.95),0 0 0 14px var(--pink),0 25px 30px rgba(36,20,14,.17)}
+.sensor-face{width:54px;height:36px;border-radius:50%;background:#19100d;display:flex;justify-content:center;align-items:center;gap:10px}
+.sensor-face i{width:9px;height:9px;border-radius:50%;background:#b78cff;box-shadow:0 0 10px rgba(183,140,255,.85)}
+.c1{left:12%;background:#3155e8;animation-delay:-.2s}.c2{left:23%;background:#38dc5f;animation-delay:-1.1s}.c3{left:34%;background:#ff4638;animation-delay:-2s}.c4{left:45%;background:#fff;animation-delay:-2.9s}
+.c5{left:56%;background:#ffd21e;animation-delay:-.7s}.c6{left:67%;background:#ff5a9a;animation-delay:-1.6s}.c7{left:78%;background:#ff8638;animation-delay:-2.5s}.c8{left:89%;background:#20c0e8;animation-delay:-3.4s}
+.cue-card{position:absolute;left:24px;top:24px;z-index:12;max-width:300px;text-align:left;background:#fff;border:3px solid var(--ink);border-radius:22px;padding:16px 18px;box-shadow:0 8px 0 rgba(36,20,14,.08)}
+.cue-label{font-size:10px;font-weight:950;letter-spacing:.14em;text-transform:uppercase;opacity:.5}
+.cue-text{margin-top:6px;font-size:21px;font-weight:950;letter-spacing:-.03em;line-height:1.15}
+.cue-swatch{display:inline-block;width:16px;height:16px;border-radius:50%;border:3px solid var(--ink);vertical-align:-2px;margin-right:6px}
+.cue-feedback{margin-top:8px;min-height:20px;font-size:14px;font-weight:800;color:#5f5149}
+.cue-feedback.good{color:#14853a}
+.tap-hint{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:12;font-size:12px;font-weight:900;background:rgba(255,255,255,.84);padding:10px 16px;border-radius:999px;border:1px solid rgba(36,20,14,.08);white-space:nowrap}
+.music-note-float{position:absolute;left:50%;top:50%;z-index:50;pointer-events:none;font-family:Arial,sans-serif;font-size:clamp(90px,9vw,150px);font-weight:1000;line-height:1;opacity:0;transform:translate(-50%,-20%) scale(.18) rotate(-10deg);text-shadow:0 8px 0 rgba(36,20,14,.09)}
+.music-note-float.fly{animation:noteFly 1.05s cubic-bezier(.16,.77,.18,1) forwards}
+@keyframes noteFly{0%{opacity:0;transform:translate(-50%,-20%) scale(.18) rotate(-10deg)}12%{opacity:1;transform:translate(-35%,-70%) scale(1.05) rotate(0)}100%{opacity:0;transform:translate(45%,-260%) scale(1.28) rotate(12deg)}}
+@keyframes setupFloat{0%,100%{translate:0 0;rotate:0deg}50%{translate:0 -8px;rotate:1.5deg}}
+@keyframes setupTap{0%{scale:1}35%{scale:1.16}100%{scale:1}}
+@keyframes setupBoxVibe{0%,100%{transform:translate(-50%,-50%) rotate(0) scale(1)}25%{transform:translate(-50%,-50%) rotate(-1.4deg) scale(1.03)}60%{transform:translate(-50%,-50%) rotate(1.2deg) scale(1.02)}}
+@keyframes speakerPulse{0%,100%{transform:scale(1)}40%{transform:scale(1.09)}}
+
+/* Why sound */
+.why-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.why-strip span{padding:10px 15px;border-radius:999px;background:#fff0f6;font-size:13px;font-weight:850;color:#5a3d49}
+
+/* Body map */
+.body-map{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:28px;align-items:center;margin-top:40px;background:#fff;border:3px solid var(--ink);border-radius:30px;padding:28px;box-shadow:0 8px 0 rgba(36,20,14,.07)}
+.body-figure svg{display:block;width:100%;height:auto;max-height:420px}
+.body-figure .part{fill:#f1e7df;stroke:var(--ink);stroke-width:5;stroke-linejoin:round;transition:fill .25s ease}
+.body-figure .head{fill:#f1e7df}
+.body-map[data-zone="upper"] .arms{fill:var(--pink)}
+.body-map[data-zone="lower"] .legs{fill:var(--blue)}
+.zone-toggle{display:flex;flex-wrap:wrap;gap:10px}
+.zone-btn{border:3px solid var(--ink);background:#fff;border-radius:999px;padding:12px 18px;font-weight:900;box-shadow:0 5px 0 rgba(36,20,14,.08);transition:.2s}
+.zone-btn[aria-pressed="true"]{background:var(--ink);color:#fff;transform:translateY(-2px)}
+.zone-panel h3{margin:20px 0 6px;font-size:clamp(26px,3vw,36px);letter-spacing:-.05em;line-height:1}
+.zone-panel .zone-setup{display:inline-block;margin-top:4px;padding:7px 12px;border-radius:999px;background:#fff7d6;border:1px solid rgba(36,20,14,.12);font-size:11px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+.zone-panel p{margin:12px 0 0;line-height:1.55;color:#5f5149}
+.zone-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.zone-list span{font-size:13px;font-weight:850;background:#f5eee8;border-radius:99px;padding:8px 12px}
+.zone-link{display:inline-block;margin-top:18px;font-weight:950;border-bottom:3px solid var(--pink)}
+
+/* Who it's for */
+.who-card{position:relative}
+.who-card .who-icon{font-size:30px;display:block;margin-bottom:12px}
+.who-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.who-tags span{font-size:11px;font-weight:900;background:#f5eee8;border-radius:99px;padding:5px 9px}
+.who-card.lead{border:3px solid var(--ink);box-shadow:0 8px 0 rgba(36,20,14,.07)}
+.lead-badge{position:absolute;top:18px;right:18px;font-size:10px;font-weight:950;letter-spacing:.08em;text-transform:uppercase;background:#eaffdf;border:1px solid rgba(36,20,14,.12);border-radius:99px;padding:5px 9px}
+
+/* Therapy activity library — same look as the Play Lab */
+.play-lab{padding:110px 24px;background:#fff7ef;position:relative;overflow:hidden}
+.play-lab:before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:#ffd95b;opacity:.18;right:-180px;top:-180px}
+.play-lab-inner{max-width:1180px;margin:auto;position:relative}
+.goal-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin:34px 0 26px}
+.goal-btn{border:2px solid rgba(36,20,14,.14);background:#fffaf0;border-radius:18px;padding:15px 8px;text-align:center;font-weight:900;transition:.2s}
+.goal-btn:hover,.goal-btn.active{border-color:var(--ink);background:#ffd95b;transform:translateY(-2px)}
+.goal-btn .gi{display:block;font-size:25px;margin-bottom:7px}
+.activity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.activity-card{text-align:left;background:#fff;border:3px solid var(--ink);border-radius:24px;padding:23px;box-shadow:0 8px 0 rgba(36,20,14,.07);cursor:pointer;transition:.22s;color:inherit}
+.activity-card:hover{transform:translateY(-5px);box-shadow:0 13px 0 rgba(36,20,14,.1)}
+.activity-card:focus-visible{outline:4px solid var(--pink);outline-offset:4px}
+.activity-icon{font-size:31px}
+.activity-card h3{margin:10px 0 7px;font-size:22px}
+.activity-card p{margin:0;color:#5f5149;line-height:1.55}
+.activity-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.activity-meta span{font-size:12px;font-weight:900;background:#f5eee8;border-radius:99px;padding:6px 9px}
+.activity-detail{display:none;margin-top:26px;background:var(--ink);color:#fff;border-radius:28px;padding:30px}
+.activity-detail.show{display:block}
+.activity-detail h3{font-size:32px;margin:4px 0 10px}
+.activity-detail p{color:#f8eee7;line-height:1.65;margin:0}
+.activity-detail .sales-kicker{color:#ffb7cf;opacity:1}
+.activity-steps{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.activity-steps span{background:rgba(255,255,255,.12);padding:9px 12px;border-radius:99px;font-size:13px;font-weight:800}
+.detail-more{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:22px}
+.detail-box{background:rgba(255,255,255,.08);border-radius:16px;padding:15px}
+.detail-box b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#ffb7cf;margin-bottom:6px}
+.detail-box span{display:block;color:#fff0e8;line-height:1.5;font-size:14px}
+.detail-prompts{margin-top:16px;padding:15px 17px;border-left:4px solid #ffb7cf;background:rgba(255,255,255,.06);border-radius:12px;color:#fff0e8;font-size:14px;line-height:1.6}
+.empty-note{grid-column:1/-1;padding:22px;border-radius:20px;background:#fff;border:2px dashed rgba(36,20,14,.2);font-weight:800;color:#5f5149}
+
+/* Session builder */
+.builder{margin-top:40px;background:#fff;border:3px solid var(--ink);border-radius:30px;padding:28px;box-shadow:0 8px 0 rgba(36,20,14,.07)}
+.builder-controls{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:12px;align-items:end}
+.builder label{display:block;font-size:11px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin-bottom:7px}
+.builder select{width:100%;border:2px solid rgba(36,20,14,.16);border-radius:14px;padding:13px 14px;background:#fffaf0;color:var(--ink);font:inherit;font-weight:800}
+.surprise-btn{border:3px solid var(--ink);background:#ffb7cf;color:var(--ink);font-weight:1000;font-size:17px;border-radius:18px;padding:13px 20px;cursor:pointer;white-space:nowrap;box-shadow:0 6px 0 rgba(36,20,14,.15)}
+.surprise-btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(36,20,14,.15)}
+.plan-out{margin-top:24px}
+.plan-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.plan-head h3{margin:0;font-size:28px;letter-spacing:-.04em}
+.plan-head span{font-weight:900;opacity:.55}
+.plan-steps{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:10px}
+.plan-step{display:grid;grid-template-columns:96px 1fr auto;gap:16px;align-items:center;background:#fffaf0;border:1px solid rgba(36,20,14,.1);border-radius:18px;padding:16px 18px}
+.plan-time{font-size:12px;font-weight:950;letter-spacing:.06em;text-transform:uppercase}
+.plan-time b{display:block;font-size:22px;letter-spacing:-.03em;text-transform:none}
+.plan-step h4{margin:0;font-size:18px}
+.plan-step p{margin:4px 0 0;font-size:14px;line-height:1.45;color:#5f5149}
+.plan-open{border:2px solid var(--ink);background:#fff;border-radius:999px;padding:8px 14px;font-weight:900;font-size:13px}
+.plan-tip{margin-top:14px;padding:13px 15px;border-radius:16px;background:#fff0f6;font-weight:750;color:#5a3d49}
+.plan-note{margin-top:10px;font-size:13px;color:#66574e}
+
+/* Where it fits pills */
+.place-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.place-grid span{padding:14px 18px;border-radius:999px;background:#fff;border:2px solid rgba(36,20,14,.12);font-weight:900}
+
+/* FAQ + contact — same as index.html */
+.faq-list{margin-top:35px;display:grid;gap:10px}
+.faq-list details{background:#fff;border:1px solid rgba(36,20,14,.08);border-radius:16px;padding:18px 20px}
+.faq-list summary{cursor:pointer;font-weight:850}
+.faq-list p{margin:12px 0 0;line-height:1.5;opacity:.65}
+.demo-panel{margin-top:38px;background:#fff;border-radius:30px;padding:30px;box-shadow:0 20px 60px rgba(36,20,14,.09)}
+.demo-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.demo-form input,.demo-form select,.demo-form textarea{width:100%;border:1px solid rgba(36,20,14,.14);border-radius:13px;padding:14px 15px;background:#fffaf0;color:var(--ink);font:inherit}
+.demo-form textarea{min-height:110px;grid-column:1/-1;resize:vertical}
+.demo-form .full{grid-column:1/-1}
+.booking-direct-strip{text-align:center;margin-top:8px}
+.booking-direct-title{font-weight:950;font-size:1rem;margin-bottom:14px}
+.booking-direct-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.direct-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:11px 18px;border:2px solid rgba(36,20,14,.16);border-radius:999px;color:inherit;background:#fff;text-decoration:none;font-weight:900;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.direct-btn:hover{transform:translateY(-2px);box-shadow:0 4px 0 rgba(36,20,14,.12)}
+.direct-btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.contact-location-bottom{margin:28px auto 0;max-width:900px;padding:24px 26px;border:2px solid rgba(36,20,14,.14);border-radius:24px;background:rgba(255,255,255,.84);text-align:center;line-height:1.6}
+.contact-location-bottom .location-label{font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.5;margin-bottom:8px}
+.contact-location-bottom .company{font-size:1.18rem;font-weight:800;letter-spacing:-.025em;margin-bottom:5px}
+.contact-location-bottom .address{opacity:.68;font-size:.91rem;line-height:1.55}
+.contact-location-bottom .location-contact{margin-top:10px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px 11px;font-weight:600;font-size:.78rem;opacity:.62}
+.contact-location-bottom .location-contact a:hover{opacity:1;text-decoration:underline}
+.contact-location-bottom .contact-separator{opacity:.3}
+.health-disclaimer{padding:28px 24px 40px;background:#24140e;color:#fff;font-size:13px;line-height:1.6}
+.health-disclaimer .sales-inner{opacity:.72}
+.health-disclaimer a{border-bottom:1px solid rgba(255,255,255,.4)}
+
+@media(max-width:1000px){.goal-grid{grid-template-columns:repeat(4,1fr)}.builder-controls{grid-template-columns:repeat(2,1fr)}.builder-controls .surprise-btn{grid-column:1/-1}}
+@media(max-width:900px){
+.feature-grid,.flow-grid,.application-grid,.application-grid.three{grid-template-columns:repeat(2,1fr)}
+.activity-grid{grid-template-columns:repeat(2,1fr)}
+.setup-canvas{height:500px;border-radius:28px}
+.setup-box{width:190px;top:40%}
+.setup-box-face{padding:16px 14px 13px}
+.box-logo{font-size:20px}
+.speakers{gap:12px;margin:14px 0 11px}
+.speaker{width:46px;height:40px;border-radius:11px}
+.speaker:after{left:13px;right:13px;top:18px;height:4px}
+.port{width:9px;height:9px}
+.setup-sensor{width:72px;height:72px;margin-left:-36px;border-width:4px;top:78%}
+.setup-sensor:before,.setup-sensor:after{top:-20px;width:16px;height:22px;border-width:4px}
+.sensor-face{width:40px;height:27px;gap:7px}.sensor-face i{width:7px;height:7px}
+.cue-card{left:14px;right:14px;top:14px;max-width:none;padding:12px 14px}
+.cue-text{font-size:18px}
+.body-map{grid-template-columns:1fr;padding:22px}
+.body-figure svg{max-height:300px}
+}
+@media(max-width:800px){
+.nav{top:10px;padding:8px 9px 8px 15px}
+.brand{font-size:21px}
+.navlinks{display:none}
+.quote{padding:10px 14px;font-size:13px}
+.plan-top{display:none}
+.health-hero{padding:118px 18px 64px}
+.sales-section,.play-lab{padding:80px 18px}
+.invengic-band{padding:72px 18px}
+}
+@media(max-width:650px){
+.feature-grid,.flow-grid,.application-grid,.application-grid.three,.activity-grid{grid-template-columns:1fr}
+.goal-grid{grid-template-columns:repeat(2,1fr)}
+.builder{padding:20px}
+.builder-controls{grid-template-columns:1fr}
+.surprise-btn{width:100%}
+.plan-step{grid-template-columns:1fr;gap:8px}
+.plan-open{justify-self:start}
+.detail-more{grid-template-columns:1fr}
+.activity-detail{padding:22px}
+.demo-panel{padding:20px}
+.demo-form{grid-template-columns:1fr}
+.demo-form textarea,.demo-form .full{grid-column:auto}
+.direct-btn{width:100%}
+.contact-location-bottom{padding:20px 12px}
+.setup-canvas{height:440px}
+.setup-sensor{width:36px;height:36px;margin-left:-18px;border-width:3px;top:76%}
+.setup-sensor:before,.setup-sensor:after{top:-11px;width:9px;height:12px;border-width:3px}
+.setup-sensor.target{box-shadow:0 0 0 4px rgba(255,255,255,.95),0 0 0 7px var(--pink),0 12px 16px rgba(36,20,14,.17)}
+.sensor-face{width:22px;height:15px;gap:4px}.sensor-face i{width:4px;height:4px}
+.setup-box{width:150px;top:44%}
+.speaker{width:36px;height:32px}
+.speaker:after{left:10px;right:10px;top:14px;height:3px}
+.tap-hint{font-size:10px;bottom:10px}
+}
+@media(prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+.setup-sensor,.setup-sensor.active,.setup-box.playing,.setup-box.playing .speaker,.music-note-float.fly{animation:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav"><a class="brand" href="index.html" aria-label="Amble Beats home">amble <b>beats</b></a><div class="navlinks"><a href="index.html">Home</a><a href="#why-sound">Why sound</a><a href="#who">Who it's for</a><a href="#exercises">Exercises</a><a href="#faq">FAQ</a><a class="current" href="health.html" aria-current="page">Health</a></div><div style="display:flex;gap:8px;align-items:center"><a class="plan-top" href="#session-builder">Plan a Session</a><a class="quote" href="#contact">Book a Demo</a></div></nav>
+
+<main>
+<section class="health-hero" id="top">
+  <div class="hero-kicker">Amble Beats for Health</div>
+  <h1>Every movement <span>gets a response.</span></h1>
+  <p class="hero-lead">The same Amble Beats system — eight characters that answer every step, reach and tap with sound — designed to make physiotherapy, rehabilitation and therapy sessions feel like play.</p>
+  <div class="value-points">
+    <span class="value-pill">Balance</span><span class="value-pill">Walking</span><span class="value-pill">Reach</span><span class="value-pill">Coordination</span><span class="value-pill">Reaction</span><span class="value-pill">Memory</span><span class="value-pill">Sensory play</span>
+  </div>
+  <div class="hero-ctas">
+    <a class="btn-dark" href="#session-builder">Plan a therapy session</a>
+    <a class="btn-pink" href="#contact">Book a clinic demo</a>
+  </div>
+
+  <div class="demo-wrap">
+    <div class="setup-canvas" id="cueDemo">
+      <div class="setup-halo"></div>
+      <svg class="cable-svg" viewBox="0 0 1200 720" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M548 300 C548 380, 144 430, 144 548"/>
+        <path d="M565 300 C565 380, 276 430, 276 548"/>
+        <path d="M580 300 C580 380, 408 430, 408 548"/>
+        <path d="M595 300 C595 380, 540 430, 540 548"/>
+        <path d="M605 300 C605 380, 672 430, 672 548"/>
+        <path d="M620 300 C620 380, 804 430, 804 548"/>
+        <path d="M635 300 C635 380, 936 430, 936 548"/>
+        <path d="M652 300 C652 380, 1068 430, 1068 548"/>
+      </svg>
+      <div class="setup-box" id="demoBox">
+        <div class="setup-box-face">
+          <div class="box-logo">INVENGIC</div>
+          <div class="speakers"><div class="speaker"></div><div class="speaker"></div></div>
+          <div class="ports"><i class="port"></i><i class="port"></i><i class="port"></i><i class="port"></i><i class="port"></i><i class="port"></i><i class="port"></i><i class="port"></i></div>
+        </div>
+      </div>
+      <div class="cue-card" aria-live="polite">
+        <div class="cue-label">Try a therapist cue</div>
+        <div class="cue-text" id="cueText">Step to <span class="cue-swatch" style="background:#ffd21e"></span>Yellow</div>
+        <div class="cue-feedback" id="cueFeedback">Tap the character that matches the cue.</div>
+      </div>
+      <button class="setup-sensor c1" data-note="C4" data-name="Blue" aria-label="Blue character"><span class="sensor-face"><i></i><i></i></span></button>
+      <button class="setup-sensor c2" data-note="D4" data-name="Green" aria-label="Green character"><span class="sensor-face"><i></i><i></i></span></button>
+      <button class="setup-sensor c3" data-note="E4" data-name="Red" aria-label="Red character"><span class="sensor-face"><i></i><i></i></span></button>
+      <button class="setup-sensor c4" data-note="F4" data-name="White" aria-label="White character"><span class="sensor-face"><i></i><i></i></span></button>
+      <button class="setup-sensor c5" data-note="G4" data-name="Yellow" aria-label="Yellow character"><span class="sensor-face"><i></i><i></i></span></button>
+      <button class="setup-sensor c6" data-note="A4" data-name="Pink" aria-label="Pink character"><span class="sensor-face"><i></i><i></i></span></button>
+      <button class="setup-sensor c7" data-note="B4" data-name="Orange" aria-label="Orange character"><span class="sensor-face"><i></i><i></i></span></button>
+      <button class="setup-sensor c8" data-note="C5" data-name="Sky blue" aria-label="Sky blue character"><span class="sensor-face"><i></i><i></i></span></button>
+      <div class="tap-hint">This is how a “Stepping Stones” cue works</div>
+    </div>
+  </div>
+</section>
+
+<section class="sales-section" id="why-sound" style="background:#fff">
+  <div class="sales-inner">
+    <div class="sales-kicker">Why sound helps</div>
+    <h2 class="sales-title">Rehab is repetition.<br><span>Sound makes it play.</span></h2>
+    <p class="sales-lead">Therapy exercises work through doing the same movement again and again — and that is exactly where motivation drops. Amble Beats answers every movement with sound, so each repetition has a reason.</p>
+    <div class="flow-grid">
+      <div class="flow-card"><span class="num">01</span><h3>Move</h3><p>The patient steps, reaches or taps one of the characters.</p></div>
+      <div class="flow-card"><span class="num">02</span><h3>Hear</h3><p>The system answers instantly with a note or a beat — a clear signal that the movement landed.</p></div>
+      <div class="flow-card"><span class="num">03</span><h3>Repeat</h3><p>A response every time gives patients, especially children, a reason to try one more.</p></div>
+      <div class="flow-card"><span class="num">04</span><h3>Adjust</h3><p>The therapist changes distance, order, pace or group size to set the right challenge.</p></div>
+    </div>
+    <div class="why-strip"><span>Instant feedback</span><span>Rhythm to pace movement</span><span>Targets patients can hear</span><span>Play instead of drills</span></div>
+  </div>
+</section>
+
+<section class="sales-section" id="body">
+  <div class="sales-inner">
+    <div class="sales-kicker">Two setups · Two halves of the body</div>
+    <h2 class="sales-title">One system for<br><span>legs and arms.</span></h2>
+    <p class="sales-lead">The open floor setup brings the characters to the feet. The raised drum set brings them up to the hands. Choose the setup by the movement you want to work on.</p>
+    <div class="body-map" id="bodyMap" data-zone="lower">
+      <div class="body-figure" aria-hidden="true">
+        <svg viewBox="0 0 240 420">
+          <circle class="part head" cx="120" cy="52" r="34"/>
+          <path class="part torso" d="M84 100 Q120 88 156 100 L150 240 Q120 250 90 240 Z"/>
+          <g class="arms">
+            <path class="part arms" d="M84 104 Q56 112 44 150 L28 228 Q24 244 38 246 Q50 247 52 232 L70 164 L88 150 Z"/>
+            <path class="part arms" d="M156 104 Q184 112 196 150 L212 228 Q216 244 202 246 Q190 247 188 232 L170 164 L152 150 Z"/>
+          </g>
+          <g class="legs">
+            <path class="part legs" d="M92 238 L84 390 Q84 406 100 406 Q114 406 114 390 L120 270 Z"/>
+            <path class="part legs" d="M148 238 L156 390 Q156 406 140 406 Q126 406 126 390 L120 270 Z"/>
+          </g>
+        </svg>
+      </div>
+      <div>
+        <div class="zone-toggle" role="group" aria-label="Choose a body area">
+          <button class="zone-btn" data-zone="lower" aria-pressed="true">🦵 Lower body</button>
+          <button class="zone-btn" data-zone="upper" aria-pressed="false">💪 Upper body</button>
+        </div>
+        <div class="zone-panel" id="zonePanel" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sales-section" id="who" style="background:#fff">
+  <div class="sales-inner">
+    <div class="sales-kicker">Who it's for</div>
+    <h2 class="sales-title">Designed for therapy<br><span>at every age.</span></h2>
+    <p class="sales-lead">Always used under the guidance of a qualified therapist, who chooses the activities and the challenge for each person.</p>
+    <div class="application-grid three">
+      <div class="application-card who-card lead"><span class="lead-badge">Best fit</span><span class="who-icon">🧒</span><h3>Children's physiotherapy</h3><p>Stepping, balance, jumping and weight-shifting for children working on motor skills — with characters they already want to play with.</p><div class="who-tags"><span>Motor skills</span><span>Balance</span><span>Coordination</span></div></div>
+      <div class="application-card who-card lead"><span class="lead-badge">Best fit</span><span class="who-icon">🧩</span><h3>Occupational therapy &amp; sensory play</h3><p>Cause and effect, turn-taking, listening and attention for children with sensory, attention or developmental needs.</p><div class="who-tags"><span>Sensory</span><span>Attention</span><span>Turn-taking</span></div></div>
+      <div class="application-card who-card"><span class="who-icon">🧠</span><h3>Neuro rehabilitation</h3><p>Reach-and-tap targets for the arms and rhythm-paced stepping for adults rebuilding movement, for example after a stroke.</p><div class="who-tags"><span>Reach</span><span>Rhythm</span><span>Adults</span></div></div>
+      <div class="application-card who-card"><span class="who-icon">🧓</span><h3>Seniors &amp; balance</h3><p>Step-to-target and reaction activities for balance practice, plus memory sequences for group sessions in elder care.</p><div class="who-tags"><span>Balance</span><span>Reaction</span><span>Memory</span></div></div>
+      <div class="application-card who-card"><span class="who-icon">⚽</span><h3>Sports &amp; orthopaedic rehab</h3><p>Agility, reaction-time and stepping drills that turn return-to-activity work into a challenge.</p><div class="who-tags"><span>Agility</span><span>Reaction</span><span>Footwork</span></div></div>
+      <div class="application-card who-card"><span class="who-icon">🎵</span><h3>Music &amp; movement therapy</h3><p>Eight playable notes and percussion sounds that respond to the body — a ready-made instrument for movement-based music sessions.</p><div class="who-tags"><span>Rhythm</span><span>Expression</span><span>Groups</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="play-lab" id="exercises">
+  <div class="play-lab-inner">
+    <div class="sales-kicker">The Amble therapy library</div>
+    <h2 class="sales-title">Start with the<br><span>therapy goal.</span></h2>
+    <p class="sales-lead">Pick what you want to work on. Each idea shows the setup, how to make it easier or harder, and cues to use in the session.</p>
+    <div class="goal-grid" role="group" aria-label="Filter exercises by goal">
+      <button class="goal-btn active" data-goal="all" aria-pressed="true"><span class="gi">✨</span>All</button>
+      <button class="goal-btn" data-goal="balance" aria-pressed="false"><span class="gi">⚖️</span>Balance</button>
+      <button class="goal-btn" data-goal="walking" aria-pressed="false"><span class="gi">👣</span>Walking</button>
+      <button class="goal-btn" data-goal="reach" aria-pressed="false"><span class="gi">🙌</span>Reach</button>
+      <button class="goal-btn" data-goal="coordination" aria-pressed="false"><span class="gi">🔀</span>Coordination</button>
+      <button class="goal-btn" data-goal="reaction" aria-pressed="false"><span class="gi">⚡</span>Reaction</button>
+      <button class="goal-btn" data-goal="memory" aria-pressed="false"><span class="gi">🧠</span>Memory</button>
+      <button class="goal-btn" data-goal="sensory" aria-pressed="false"><span class="gi">🌈</span>Sensory</button>
+    </div>
+    <div class="activity-grid" id="therapyGrid"></div>
+    <div class="activity-detail" id="therapyDetail" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="sales-section" id="session-builder" style="background:#fff">
+  <div class="sales-inner">
+    <div class="sales-kicker">Session builder</div>
+    <h2 class="sales-title">Plan a 20-minute<br><span>session in seconds.</span></h2>
+    <p class="sales-lead">Choose who the session is for, the goal and the setup. Amble Beats suggests a warm-up, two main activities and a cool-down.</p>
+    <div class="builder">
+      <div class="builder-controls">
+        <div><label for="bWho">Who</label><select id="bWho"><option value="child">Child</option><option value="adult">Adult</option><option value="senior">Senior</option></select></div>
+        <div><label for="bGoal">Goal</label><select id="bGoal"><option value="balance">Balance</option><option value="walking">Walking</option><option value="reach">Reach</option><option value="coordination">Coordination</option><option value="reaction">Reaction</option><option value="memory">Memory</option><option value="sensory">Sensory</option></select></div>
+        <div><label for="bSetup">Setup</label><select id="bSetup"><option value="any">Either setup</option><option value="floor">Open floor</option><option value="drum">Raised drum set</option></select></div>
+        <div><label for="bPos">Position</label><select id="bPos"><option value="standing">Standing</option><option value="seated">Seated</option></select></div>
+        <button class="surprise-btn" id="bShuffle" type="button">🎲 Another plan</button>
+      </div>
+      <div class="plan-out" id="planOut" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sales-section" id="therapists">
+  <div class="sales-inner">
+    <div class="sales-kicker">For therapists</div>
+    <h2 class="sales-title">You set the challenge.<br><span>It keeps them playing.</span></h2>
+    <div class="feature-grid">
+      <div class="feature-card"><b>Change the difficulty</b><p>Spacing, order, pace and the number of characters in play are all set by you.</p></div>
+      <div class="feature-card"><b>One-to-one or groups</b><p>Work with a single patient or run a turn-taking group session.</p></div>
+      <div class="feature-card"><b>Standing or seated</b><p>Floor activities for stepping; the raised drum set for reaching and tapping.</p></div>
+      <div class="feature-card"><b>One system, many uses</b><p>The same kit works for school play, therapy and group activities.</p></div>
+    </div>
+    <div class="sales-kicker" style="margin-top:56px">Where it fits</div>
+    <div class="place-grid"><span>🏥 Rehab &amp; physio clinics</span><span>🧸 Children's hospital wards</span><span>🏫 Special schools</span><span>🧩 Therapy &amp; OT centres</span><span>🌿 Elderly care &amp; day centres</span><span>🏃 Sports clinics</span></div>
+  </div>
+</section>
+
+<section class="invengic-band" id="pilot">
+  <div class="sales-inner">
+    <div class="sales-kicker">Pilot partner programme</div>
+    <h2 class="sales-title">Help us shape Amble Beats<br>for therapy.</h2>
+    <p class="sales-lead">We're inviting physiotherapists, occupational therapists, rehab centres and special schools to try Amble Beats in their sessions and tell us what works.</p>
+    <div class="hero-ctas" style="justify-content:flex-start"><a class="btn-pink" href="#contact" data-interest="Pilot partner programme">Become a pilot partner</a></div>
+  </div>
+</section>
+
+<section class="sales-section" id="faq" style="background:#fff">
+  <div class="sales-inner">
+    <div class="sales-kicker">Frequently asked</div>
+    <h2 class="sales-title">Questions therapists may have.</h2>
+    <div class="faq-list">
+      <details><summary>Is Amble Beats a medical device?</summary><p>No. Amble Beats is an interactive music-and-movement system. It is not a medical device and is not intended to diagnose, treat, cure or prevent any condition. Therapists can choose to use it as an engaging tool within their own sessions.</p></details>
+      <details><summary>Does it replace a therapist?</summary><p>No. The therapist decides the activities, the challenge and whether it is suitable for each person. Amble Beats makes the movements more engaging.</p></details>
+      <details><summary>Can it be used seated or by wheelchair users?</summary><p>The raised drum set places the characters at hand height rather than on the floor. Tell us about your users and your space, and we can discuss placement.</p></details>
+      <details><summary>Is it the same product as the school version?</summary><p>Yes. It is the same Amble Beats system — the activities change, not the hardware.</p></details>
+      <details><summary>How can we see it?</summary><p>Use the form below to book a clinic demo, or contact the Invengic team directly.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="sales-section" style="background:#ffb7cf">
+  <div class="sales-inner">
+    <div class="sales-kicker">Bring Amble Beats to your therapy space</div>
+    <h2 class="sales-title">Ready to see it<br>in your clinic?</h2>
+    <p class="sales-lead">Tell us a little about your centre and the Invengic team can arrange the next step.</p>
+    <div class="demo-panel">
+      <form class="demo-form" action="mailto:sales@invengic.in?subject=Amble%20Beats%20for%20Health%20Enquiry" method="post" enctype="text/plain">
+        <input name="Name" placeholder="Your name" required>
+        <input name="Organisation" placeholder="Clinic / Hospital / Organisation" required>
+        <input name="Role" placeholder="Role (e.g. Physiotherapist)">
+        <input name="City" placeholder="City">
+        <input name="Phone" placeholder="Phone / WhatsApp" required>
+        <input name="Email" type="email" placeholder="Email">
+        <select name="Organisation type" aria-label="Organisation type">
+          <option value="">Type of centre...</option>
+          <option>Physiotherapy / rehab clinic</option>
+          <option>Hospital</option>
+          <option>Special school / therapy centre</option>
+          <option>Occupational therapy</option>
+          <option>Elderly care</option>
+          <option>Sports clinic</option>
+          <option>Other</option>
+        </select>
+        <select name="Interested in" id="interestSelect" aria-label="Interested in">
+          <option value="">Interested in...</option>
+          <option>Open Floor Setup</option>
+          <option>Raised Drum Set</option>
+          <option>Both / Need Guidance</option>
+          <option>Pilot partner programme</option>
+        </select>
+        <textarea name="Message" placeholder="Tell us about your patients, your space or what you would like to know."></textarea>
+        <div class="full">
+          <div class="booking-direct-strip">
+            <div class="booking-direct-title">Prefer to speak with us directly?</div>
+            <div class="booking-direct-buttons">
+              <button class="direct-btn primary" type="submit">Book a Clinic Demo</button>
+              <a class="direct-btn" href="https://wa.me/918511149747?text=Hi%20Invengic%2C%20I%27m%20interested%20in%20Amble%20Beats%20for%20therapy%20and%20rehab." aria-label="Chat with Invengic on WhatsApp">💬 WhatsApp Us</a>
+              <a class="direct-btn" href="tel:+918511149747" aria-label="Call an Invengic representative">📞 Call our Representative</a>
+              <a class="direct-btn" href="mailto:sales@invengic.in?subject=Amble%20Beats%20for%20Health%20Enquiry" aria-label="Email Invengic sales">✉️ Email Us</a>
+            </div>
+          </div>
+          <div class="contact-location-bottom">
+            <div class="location-label">Company Location</div>
+            <div class="company">Invengic Ventures Pvt. Ltd.</div>
+            <div class="address">Research Park, Indian Institute of Technology Gandhinagar (IITGN),<br>Palaj, Gandhinagar – 382355, Gujarat, Bharat (भारत)</div>
+            <div class="location-contact"><a href="tel:+918511149747">📞 +91 85111 49747</a><span class="contact-separator">·</span><a href="mailto:sales@invengic.in">✉️ sales@invengic.in</a></div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="health-disclaimer">
+  <div class="sales-inner">Amble Beats is an interactive music-and-movement system and is not a medical device. It is not intended to diagnose, treat, cure or prevent any disease or condition. Activities on this page are ideas for qualified professionals, who should decide what is suitable for each person. · <a href="index.html">Back to Amble Beats home</a></div>
+</footer>
+
+<script src="amble-sound.js"></script>
+<script>
+(()=>{
+'use strict';
+/* ---------- Sound (same synth as index.html) ---------- */
+const AudioCtx=window.AudioContext||window.webkitAudioContext;
+let ctx=null,lastSound=0;
+const notes={C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392,A4:440,B4:493.88,C5:523.25};
+function ensureAudio(){if(!ctx&&AudioCtx){try{ctx=new AudioCtx()}catch(e){}}return ctx}
+async function unlock(){const c=ensureAudio();if(!c)return false;if(c.state==='suspended'){try{await c.resume()}catch(e){return false}}return c.state==='running'}
+function playNote(note){const c=ctx;if(!c||c.state!=='running')return false;const now=c.currentTime;if(now-lastSound<.055)return false;lastSound=now;if(window.AmbleSound&&AmbleSound.note(c,note))return true;const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(notes[note]||440,now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.28,now+.012);g.gain.exponentialRampToValueAtTime(.0001,now+.42);o.connect(g);g.connect(c.destination);o.start();o.stop(now+.44);return true}
+function bigNote(el){const n=document.createElement('span');n.className='music-note-float';n.textContent=Math.random()>.5?'♪':'♫';n.style.color=getComputedStyle(el).backgroundColor||'var(--pink)';n.setAttribute('aria-hidden','true');el.appendChild(n);requestAnimationFrame(()=>n.classList.add('fly'));setTimeout(()=>n.remove(),1150)}
+function pulseVisual(el,boxEl){el.classList.remove('active');void el.offsetWidth;el.classList.add('active');bigNote(el);if(boxEl){boxEl.classList.remove('playing');void boxEl.offsetWidth;boxEl.classList.add('playing');setTimeout(()=>boxEl.classList.remove('playing'),620)}setTimeout(()=>el.classList.remove('active'),650)}
+
+/* ---------- Hero cue demo ---------- */
+const demoBox=document.getElementById('demoBox');
+const sensors=[...document.querySelectorAll('#cueDemo .setup-sensor')];
+const cueText=document.getElementById('cueText'),cueFeedback=document.getElementById('cueFeedback');
+const praise=['Great step!','Nice reach!','Spot on!','That landed!','Well done!'];
+let target=4,round=0;
+function setCue(i){
+  sensors.forEach(s=>s.classList.remove('target'));
+  target=i;const s=sensors[i];s.classList.add('target');
+  cueText.innerHTML='';
+  cueText.append('Step to ');
+  const sw=document.createElement('span');sw.className='cue-swatch';sw.style.background=getComputedStyle(s).backgroundColor;
+  cueText.append(sw,s.dataset.name);
+}
+function nextCue(){let n=target;while(n===target){n=(target+3+round*5)%sensors.length;round++}setCue(n)}
+function hit(s,i){
+  pulseVisual(s,demoBox);
+  unlock().then(ok=>{if(ok)playNote(s.dataset.note)});
+  if(i===target){cueFeedback.textContent=praise[round%praise.length]+' Next cue…';cueFeedback.classList.add('good');setTimeout(nextCue,650)}
+  else{cueFeedback.textContent='That one is '+s.dataset.name+' — every move still makes a sound. Find '+sensors[target].dataset.name+'.';cueFeedback.classList.remove('good')}
+}
+sensors.forEach((s,i)=>{
+  s.addEventListener('pointerdown',e=>{e.preventDefault();hit(s,i)});
+  s.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();hit(s,i)}});
+});
+setCue(4);
+
+/* ---------- Therapy activities ---------- */
+// s: 'floor' | 'drum' | 'either'   pos: positions it suits   who: who it suits   warm/cool: usable as warm-up / cool-down
+const activities=[
+{g:'balance',i:'🪨',t:'Stepping Stones',d:'Call a colour. The patient steps onto that character, then steps back to the start.',s:'floor',pos:['standing'],who:['child','adult','senior'],time:'5–8 min',st:['Call a colour','Step onto it','Return to start'],easy:'Use 3–4 characters placed close together, with a hand-hold or rail nearby.',hard:'Spread the characters wider, call faster, or ask for a short pause on one foot before stepping back.',cues:'“Step to blue.” · “Soft landing.” · “Back to the middle.”'},
+{g:'balance',i:'🧊',t:'Freeze & Balance',d:'Step and play freely. On “freeze”, the patient holds still on the character they reached.',s:'floor',pos:['standing'],who:['child','adult','senior'],time:'5 min',st:['Step and play','Hear the freeze cue','Hold the position'],easy:'Hold for 2–3 seconds with both feet down.',hard:'Hold longer, or freeze with one foot lifted.',cues:'“Freeze!” · “Can you hold for three?” · “Now play again.”'},
+{g:'balance',i:'↔️',t:'Side-Step Scale',d:'Characters sit in a line. The patient side-steps left and right to play a rising and falling scale.',s:'floor',pos:['standing'],who:['child','adult','senior'],time:'5 min',st:['Line up the characters','Side-step to each one','Climb up, then come back down'],easy:'Use fewer characters and smaller steps.',hard:'Wider spacing, or add a pause on each note.',cues:'“Step up the scale.” · “Now come back down.”'},
+{g:'walking',i:'🥁',t:'Rhythm Walk',d:'Place characters along a walking path. The patient steps on each one in time with a steady beat the therapist sets.',s:'floor',pos:['standing'],who:['child','adult','senior'],time:'5–8 min',st:['Set a steady beat','Step on the beat','Change the tempo'],easy:'Slow beat, short path, characters close together.',hard:'Faster beat, longer path, or longer stride between characters.',cues:'“Step on the beat.” · “Listen first, then go.”'},
+{g:'walking',i:'🎼',t:'Melody Path',d:'Space the characters at a chosen step length so that each footstep along the path plays the next note of a tune.',s:'floor',pos:['standing'],who:['child','adult','senior'],time:'5–8 min',st:['Set the spacing','Walk the path','Play the whole tune'],easy:'Short path, shorter spacing.',hard:'Longer spacing, or walk the path backwards.',cues:'“Can you play the whole tune?” · “Same size steps.”'},
+{g:'walking',i:'🚧',t:'Step Over Trail',d:'Put a soft marker between characters. The patient steps over it to reach the next sound.',s:'floor',pos:['standing'],who:['child','adult'],time:'5 min',st:['Place markers','Step over','Play the character'],easy:'Low, flat markers and close spacing.',hard:'Higher markers or a longer trail.',cues:'“Lift and over.” · “Land on the sound.”'},
+{g:'reach',i:'🙌',t:'Reach & Ring',d:'On the raised drum set, call a character. The patient reaches out to play it, then returns to the middle.',s:'drum',pos:['standing','seated'],who:['child','adult','senior'],time:'5–8 min',st:['Call a character','Reach and play','Return to the middle'],easy:'Use the closest characters first.',hard:'Call the furthest characters or alternate high and low.',cues:'“Reach for the pink one.” · “Back to the middle.”'},
+{g:'reach',i:'🕐',t:'Clock Reach',d:'Play the characters one by one around the set, like moving around a clock face.',s:'drum',pos:['standing','seated'],who:['child','adult','senior'],time:'5 min',st:['Start at one side','Play each in order','Go back the other way'],easy:'Use one side of the set only.',hard:'Use the hand on the opposite side, or play the circle faster.',cues:'“All the way around.” · “Now the other way.”'},
+{g:'coordination',i:'🔀',t:'Cross Over',d:'Play characters on the left with the right hand, and characters on the right with the left hand.',s:'drum',pos:['standing','seated'],who:['child','adult','senior'],time:'5 min',st:['Pick a side','Cross over to play it','Swap hands'],easy:'Use characters close to the middle.',hard:'Call sides faster, or mix crossing and same-side calls.',cues:'“Right hand, left side.” · “Cross the middle.”'},
+{g:'coordination',i:'👐',t:'Two-Hand Beat',d:'Play two characters at the same time with both hands, then take turns hand by hand.',s:'drum',pos:['standing','seated'],who:['child','adult','senior'],time:'5 min',st:['Both hands together','Then alternate','Build a beat'],easy:'Slow, steady beat with two characters.',hard:'Add a third character or a pattern like left-left-right.',cues:'“Together!” · “Now left, right, left, right.”'},
+{g:'coordination',i:'👣',t:'Step the Pattern',d:'Play a short sound pattern. The patient steps it out on the floor characters in the same order.',s:'floor',pos:['standing'],who:['child','adult'],time:'5–8 min',st:['Play a pattern','Step it out','Add one more step'],easy:'Two-step patterns.',hard:'Longer patterns, or patterns with a side-step.',cues:'“Watch, then step.” · “Same order.”'},
+{g:'reaction',i:'⚡',t:'Quick Tap',d:'Call a character at random. The patient plays it as quickly as they safely can.',s:'drum',pos:['standing','seated'],who:['child','adult','senior'],time:'5 min',st:['Call a character','Tap it quickly','Wait for the next call'],easy:'Slower calls, fewer characters.',hard:'Faster calls, or call two in a row.',cues:'“Ready… yellow!” · “Hands back to the middle.”'},
+{g:'reaction',i:'🟢',t:'Go / Stop Steps',d:'Step and play on “go”. Stop completely on “stop”.',s:'floor',pos:['standing'],who:['child','adult','senior'],time:'5 min',st:['Agree the cues','Move on go','Stop on stop'],easy:'Long gaps between calls.',hard:'Short, unpredictable gaps.',cues:'“Go!” · “Stop!” · “Who stopped first?”'},
+{g:'memory',i:'🪞',t:'Mirror Me',d:'The therapist plays two or three sounds. The patient repeats them in the same order.',s:'either',pos:['standing','seated'],who:['child','adult','senior'],time:'5 min',st:['Listen','Remember','Play it back'],easy:'Two sounds, played slowly.',hard:'Longer sequences, or play them back in reverse.',cues:'“Listen first.” · “Your turn.”',cool:true},
+{g:'memory',i:'🪜',t:'Memory Ladder',d:'Start with a short sequence and add one sound after each successful round.',s:'either',pos:['standing','seated'],who:['child','adult','senior'],time:'5–10 min',st:['Start with two','Add one each round','How high can you climb?'],easy:'Stay at two or three sounds.',hard:'Keep adding — or mix in movement between sounds.',cues:'“One more!” · “Can you remember all of them?”'},
+{g:'sensory',i:'✨',t:'Cause & Effect Explorer',d:'Free exploration: every touch makes a sound. A gentle way to start a session or meet the system for the first time.',s:'either',pos:['standing','seated'],who:['child','adult','senior'],time:'3–5 min',st:['Explore','Notice the sound','Try another'],easy:'Start with one character only.',hard:'Add more characters and invite the patient to choose.',cues:'“What happens if you touch this one?”',warm:true},
+{g:'sensory',i:'🤝',t:'Turn-Taking Beat',d:'In a small group, each person adds one sound when it is their turn.',s:'either',pos:['standing','seated'],who:['child','adult','senior'],time:'5–10 min',st:['Sit or stand in a circle','Wait for your turn','Add your sound'],easy:'Pairs only, with a clear turn signal.',hard:'Bigger group, or keep a steady beat going.',cues:'“Whose turn is it?” · “Listen to your friend.”'},
+{g:'sensory',i:'🌙',t:'Soft & Slow',d:'Finish calmly: play slow, gentle sounds one at a time, with slow breathing between them.',s:'either',pos:['standing','seated'],who:['child','adult','senior'],time:'2–3 min',st:['Slow down','One gentle sound','Breathe and repeat'],easy:'Just two characters.',hard:'Let the patient lead the slow tune.',cues:'“Slow and soft.” · “Breathe in… play.”',cool:true}
+];
+const goalLabels={balance:'Balance',walking:'Walking',reach:'Reach',coordination:'Coordination',reaction:'Reaction',memory:'Memory',sensory:'Sensory'};
+const setupLabels={floor:'Open floor',drum:'Raised drum set',either:'Either setup'};
+const grid=document.getElementById('therapyGrid'),detail=document.getElementById('therapyDetail');
+let currentGoal='all';
+function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+function render(){
+  grid.innerHTML='';
+  const list=activities.filter(a=>currentGoal==='all'||a.g===currentGoal);
+  list.forEach(a=>{
+    const card=el('button','activity-card');card.type='button';
+    card.append(el('div','activity-icon',a.i),el('h3',null,a.t),el('p',null,a.d));
+    const meta=el('div','activity-meta');
+    [goalLabels[a.g],setupLabels[a.s],a.pos.includes('seated')?'Standing or seated':'Standing',a.time].forEach(x=>meta.append(el('span',null,x)));
+    card.append(meta);card.addEventListener('click',()=>show(a));grid.append(card);
+  });
+  document.querySelectorAll('.goal-btn').forEach(b=>{const on=b.dataset.goal===currentGoal;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
+}
+function show(a){
+  detail.innerHTML='';
+  const wrap=el('div');
+  wrap.append(el('div','sales-kicker',goalLabels[a.g]+' · '+setupLabels[a.s]),el('h3',null,a.i+' '+a.t),el('p',null,a.d));
+  const steps=el('div','activity-steps');a.st.forEach((x,i)=>steps.append(el('span',null,(i+1)+'. '+x)));wrap.append(steps);
+  const more=el('div','detail-more');
+  [['Setup',setupLabels[a.s]+' · '+(a.pos.includes('seated')?'standing or seated':'standing')+' · '+a.time],['Make it easier',a.easy],['Make it harder',a.hard],['Therapy goal',goalLabels[a.g]]].forEach(([k,v])=>{const b=el('div','detail-box');b.append(el('b',null,k),el('span',null,v));more.append(b)});
+  wrap.append(more);
+  const pr=el('div','detail-prompts');pr.append(el('strong',null,'Therapist cues'),document.createElement('br'),document.createTextNode(a.cues));wrap.append(pr);
+  detail.append(wrap);detail.classList.add('show');
+  detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function setGoal(g){currentGoal=g;render()}
+document.querySelectorAll('.goal-btn').forEach(b=>b.addEventListener('click',()=>setGoal(b.dataset.goal)));
+render();
+
+/* ---------- Body map ---------- */
+const zones={
+  lower:{title:'Lower body',setup:'Open floor setup',text:'Characters on the floor turn every step into a sound — useful for stepping, balance, weight shifting and walking patterns.',list:['Stepping','Balance','Weight shifting','Walking rhythm','Footwork'],goal:'balance',link:'See balance exercises'},
+  upper:{title:'Upper body',setup:'Raised drum set',text:'Characters on stands bring the targets up to the hands — useful for reaching, hand–eye coordination, using both hands and crossing the middle of the body.',list:['Reaching','Hand–eye coordination','Both hands','Crossing the midline','Seated sessions'],goal:'reach',link:'See reach exercises'}
+};
+const bodyMap=document.getElementById('bodyMap'),zonePanel=document.getElementById('zonePanel');
+function setZone(z){
+  const d=zones[z];bodyMap.dataset.zone=z;
+  document.querySelectorAll('.zone-btn').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.zone===z)));
+  zonePanel.innerHTML='';
+  const list=el('div','zone-list');d.list.forEach(x=>list.append(el('span',null,x)));
+  const link=el('a','zone-link',d.link+' →');link.href='#exercises';link.addEventListener('click',()=>setGoal(d.goal));
+  zonePanel.append(el('h3',null,d.title),el('span','zone-setup',d.setup),el('p',null,d.text),list,link);
+}
+document.querySelectorAll('.zone-btn').forEach(b=>b.addEventListener('click',()=>setZone(b.dataset.zone)));
+setZone('lower');
+
+/* ---------- Session builder ---------- */
+const bWho=document.getElementById('bWho'),bGoal=document.getElementById('bGoal'),bSetup=document.getElementById('bSetup'),bPos=document.getElementById('bPos'),planOut=document.getElementById('planOut');
+const tips={child:'Tip for children: keep instructions short and celebrate every sound.',adult:'Tip for adults: link each activity to an everyday task that matters to the patient.',senior:'Tip for seniors: for standing activities, keep a chair or rail within reach.'};
+let shuffle=0;
+function fits(a,setup,pos,who){return (setup==='any'||a.s===setup||a.s==='either')&&a.pos.includes(pos)&&a.who.includes(who)}
+function pick(pool,n,offset){const out=[];for(let k=0;k<pool.length&&out.length<n;k++){const a=pool[(k+offset)%pool.length];if(!out.includes(a))out.push(a)}return out}
+function buildPlan(){
+  const who=bWho.value,goal=bGoal.value,setup=bSetup.value,pos=bPos.value;
+  planOut.innerHTML='';
+  const ok=activities.filter(a=>fits(a,setup,pos,who));
+  let main=ok.filter(a=>a.g===goal&&!a.warm&&!a.cool);
+  const goalMissing=!main.length;
+  if(main.length<2)main=main.concat(ok.filter(a=>a.g!==goal&&!a.warm&&!a.cool&&!main.includes(a)));
+  if(!main.length){
+    planOut.append(el('p','plan-tip','No activities match this mix yet — try another setup or position.'));
+    return;
+  }
+  const mains=pick(main,2,shuffle);
+  const warm=ok.find(a=>a.warm)||mains[0];
+  const coolPool=ok.filter(a=>a.cool);const cool=coolPool.length?coolPool[shuffle%coolPool.length]:mains[mains.length-1];
+  const rows=[['Warm-up','4 min',warm],['Main','8 min',mains[0]],['Main','6 min',mains[1]||mains[0]],['Cool-down','2 min',cool]];
+  const head=el('div','plan-head');head.append(el('h3',null,'Sample session · '+(goalMissing?'mixed goals':goalLabels[goal])),el('span',null,'20 minutes'));
+  if(goalMissing)planOut.append(el('p','plan-tip',pos==='seated'?goalLabels[goal]+' activities in this library are done standing, so here is a seated plan with what fits.':'There are no '+goalLabels[goal].toLowerCase()+' activities for this setup yet, so here is a plan with what fits.'));
+  const ol=el('ol','plan-steps');
+  rows.forEach(([part,min,a])=>{
+    const li=el('li','plan-step');
+    const t=el('div','plan-time');t.append(document.createTextNode(part),el('b',null,min));
+    const body=el('div');body.append(el('h4',null,a.i+' '+a.t),el('p',null,a.d));
+    const btn=el('button','plan-open','Details');btn.type='button';btn.addEventListener('click',()=>{setGoal('all');show(a)});
+    li.append(t,body,btn);ol.append(li);
+  });
+  planOut.append(head,ol,el('div','plan-tip',tips[who]),el('p','plan-note','A starting idea only. A qualified therapist should choose the activities, timing and difficulty for each person.'));
+}
+[bWho,bGoal,bSetup,bPos].forEach(s=>s.addEventListener('change',()=>{shuffle=0;buildPlan()}));
+document.getElementById('bShuffle').addEventListener('click',()=>{shuffle++;buildPlan()});
+buildPlan();
+
+/* ---------- Pilot CTA preselects the form ---------- */
+document.querySelectorAll('[data-interest]').forEach(a=>a.addEventListener('click',()=>{const s=document.getElementById('interestSelect');if(s)s.value=a.dataset.interest}));
+})();
+</script>
+</body>
+</html>

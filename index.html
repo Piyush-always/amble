@@ -577,6 +577,53 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 }
 </style>
 
+<style>
+/* Interactive instrument model */
+.mdl-section{color:#493025;background:radial-gradient(ellipse at 12% 14%,#ffe5a7 0,transparent 25%),radial-gradient(ellipse at 88% 20%,#d7f0f7 0,transparent 27%),radial-gradient(ellipse at 75% 88%,#f9d6e8 0,transparent 26%),linear-gradient(135deg,#fffaf1,#f5f0ff);overflow:hidden}
+.mdl-scene{max-width:1500px;margin:auto;padding:84px 24px 64px;display:flex;flex-direction:column;gap:16px}
+.mdl-top{text-align:center}
+.mdl-eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:#9b6d54}
+.mdl-top h2{font-size:clamp(26px,4vw,48px);line-height:1.05;margin:7px 0 8px;letter-spacing:-.04em}
+.mdl-top p{margin:0;color:#82695d;font-size:15px}
+.mdl-stage{position:relative;width:100%;border-radius:30px;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(255,246,235,.58));border:1px solid rgba(255,255,255,.9);box-shadow:0 25px 80px #76503b1c;isolation:isolate}
+.mdl-stage:before,.mdl-stage:after{content:"";position:absolute;border-radius:50%;filter:blur(1px);pointer-events:none;z-index:-1}
+.mdl-stage:before{width:200px;height:200px;background:#ffe6ad88;left:-50px;top:-65px}
+.mdl-stage:after{width:240px;height:240px;background:#d7eaff88;right:-60px;bottom:-110px}
+.mdl-instrument{position:relative;width:100%;line-height:0}
+.mdl-instrument img{width:100%;height:auto;display:block;user-select:none;-webkit-user-drag:none}
+.mdl-sensor{position:absolute;z-index:3;border:0;border-radius:50%;background:transparent;transform:translate(-50%,-50%);width:7.2%;aspect-ratio:1;cursor:crosshair;padding:0;touch-action:manipulation}
+.mdl-sensor:focus-visible{outline:3px solid #4d9ac7}
+.mdl-sensor:before{content:"";position:absolute;inset:-7%;border-radius:50%;border:2px solid #ffc95b;opacity:.5;animation:mdlRing 2.2s ease-out infinite;animation-delay:var(--d,0s)}
+.mdl-sensor:hover:before,.mdl-sensor.active:before{inset:-15%;opacity:1;border-width:3px;box-shadow:0 0 24px #ffcf67aa}
+@keyframes mdlRing{0%{transform:scale(.84);opacity:.25}50%{opacity:.8}100%{transform:scale(1.16);opacity:.12}}
+.mdl-knob{position:absolute;left:90%;top:43%;width:8.5%;height:20%;border:0;border-radius:48%;background:transparent;cursor:pointer;z-index:8;touch-action:manipulation}
+.mdl-knob:hover{background:radial-gradient(ellipse,rgba(255,198,75,.2),transparent 70%)}
+.mdl-knob:active{background:radial-gradient(ellipse,rgba(255,198,75,.35),transparent 70%)}
+.mdl-knob:focus-visible{outline:3px solid #4d9ac7}
+.mdl-screen{position:absolute;left:82.5%;top:51.8%;width:6.6%;height:7.2%;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;color:#eafaff;background:linear-gradient(145deg,#142d43,#071725);border:1px solid #35556a;border-radius:5px;box-shadow:inset 0 0 12px #38a7dc44;font-size:clamp(5px,.62vw,10px);font-weight:900;letter-spacing:.04em;text-align:center;text-shadow:0 0 5px #6ed8ff;line-height:1.1}
+.mdl-screen small{display:block;font-size:.72em;opacity:.9;margin-top:2px}
+.mdl-callout{position:absolute;z-index:7;background:#fffdf8f2;border:1px solid #fff;border-radius:22px;padding:12px 16px;box-shadow:0 10px 28px #51392b1c;font-size:clamp(11px,1.2vw,16px);font-weight:750;line-height:1.3;max-width:210px;text-align:center;backdrop-filter:blur(10px)}
+.mdl-hand-callout{left:1.5%;top:62%;display:flex;align-items:center;gap:9px;max-width:245px}
+.mdl-hand{font-size:clamp(26px,3.2vw,46px);display:inline-block;animation:mdlWave 1.35s ease-in-out infinite;transform-origin:70% 70%}
+@keyframes mdlWave{0%,100%{transform:rotate(-12deg) translateY(0)}50%{transform:rotate(15deg) translateY(-5px)}}
+.mdl-hand-callout:after{content:"";position:absolute;width:clamp(24px,4vw,65px);height:2px;border-top:2px dashed #fff;left:100%;top:45%;transform:rotate(-7deg)}
+.mdl-mode-callout{right:1.5%;top:20%;max-width:175px}
+.mdl-mode-callout:after{content:"↘";position:absolute;right:28%;top:95%;font-size:clamp(30px,4vw,52px);font-weight:400;color:#fff;filter:drop-shadow(0 2px 1px #a57e65)}
+.mdl-volume{display:flex;align-items:center;justify-content:flex-end;gap:18px;max-width:100%;padding:10px 16px;background:#fffdf8cc;border:1px solid #fff;border-radius:16px;box-shadow:0 8px 24px #76503b12}
+.mdl-volume .mdl-volume-row{width:min(280px,42vw)}
+.mdl-volume-title{font-size:clamp(12px,1.5vw,20px);font-weight:850;display:flex;gap:8px;align-items:center}
+.mdl-volume-title .mdl-speaker{font-size:22px}
+.mdl-volume-row{display:flex;align-items:center;gap:10px}
+.mdl-volume-row input{width:100%;accent-color:#ffbd51;cursor:pointer}
+.mdl-volume-label{font-size:11px;font-weight:800;white-space:nowrap}
+.mdl-footer{text-align:center;color:#8d7468;font-size:12px}
+.mdl-status{font-weight:800;color:#684536}
+.mdl-toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#fffdf8;border:1px solid #fff;box-shadow:0 12px 35px #65422c25;padding:12px 18px;border-radius:18px;font-weight:750;transition:.25s;z-index:95;color:#493025}
+.mdl-toast.show{opacity:1;transform:translate(-50%,0)}
+.mdl-mobile-hint{display:none;text-align:center;font-size:13px;font-weight:800;color:#684536}
+@media(max-width:650px){.mdl-scene{padding:60px 10px 44px;gap:12px}.mdl-stage{border-radius:18px}.mdl-callout{display:none}.mdl-mobile-hint{display:block}.mdl-volume{padding:9px 11px;gap:10px;flex-wrap:wrap;justify-content:center}.mdl-volume .mdl-volume-row{width:100%;max-width:260px}.mdl-hand-callout:after{width:18px}.mdl-callout{border-radius:13px}.mdl-top p{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.mdl-sensor:before,.mdl-hand{animation:none}}
+</style>
 </head>
 <body>
 
@@ -630,7 +677,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 })();
 </script>
 
-<nav class="nav"><div class="brand">amble <b>beats</b></div><div class="navlinks"><a href="#top">Home</a><a href="#how-it-works">How it works</a><a href="#setups">Setups</a><a href="#ways-to-play">Activities</a><a href="#applications">Applications</a><a href="#contact">Contact</a></div><div style="display:flex;gap:8px;align-items:center"><a class="plan-top" href="#ways-to-play">Plan an Activity</a><a class="quote" href="mailto:sales@invengic.in?subject=Amble%20Beats%20Demo&body=Hello%20Invengic%2C%0A%0AI%20would%20like%20to%20book%20a%20demo%20of%20Amble%20Beats.%0A%0AName%3A%0ASchool%2FOrganisation%3A%0ACity%3A%0APhone%3A" aria-label="Email Invengic to book an Amble Beats demo">Book a Demo</a></div></nav>
+<nav class="nav"><div class="brand">amble <b>beats</b></div><div class="navlinks"><a href="#top">Home</a><a href="#how-it-works">How it works</a><a href="#setups">Setups</a><a href="#ways-to-play">Activities</a><a href="#applications">Applications</a><a href="health.html">Health</a><a href="#contact">Contact</a></div><div style="display:flex;gap:8px;align-items:center"><a class="plan-top" href="#ways-to-play">Plan an Activity</a><a class="quote" href="mailto:sales@invengic.in?subject=Amble%20Beats%20Demo&body=Hello%20Invengic%2C%0A%0AI%20would%20like%20to%20book%20a%20demo%20of%20Amble%20Beats.%0A%0AName%3A%0ASchool%2FOrganisation%3A%0ACity%3A%0APhone%3A" aria-label="Email Invengic to book an Amble Beats demo">Book a Demo</a></div></nav>
 <main>
 <section class="video-section" id="top">
   <div class="sales-inner">
@@ -638,10 +685,37 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
     <h2 class="sales-title">Turning your movement<br>into melodies.</h2>
     <p class="sales-lead">A real-world interactive experience where children move, listen, explore and create sound together.</p>
     <div class="video-embed" aria-label="Amble Beats product video">
-      <iframe src="https://www.youtube-nocookie.com/embed/1GSJ7ImbAH4?rel=0&amp;modestbranding=1" title="Amble Beats — Product Experience" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      <iframe src="https://www.youtube-nocookie.com/embed/coY2DUt8px8?rel=0&amp;modestbranding=1" title="One Installation. 75+ Activities. A Whole New Way to Learn! | Amble Beats by Invengic" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
-    <div class="video-caption"><strong>Amble Beats — Product Experience</strong><span>Product film</span></div>
+    <div class="video-caption"><strong>One Installation. 75+ Activities. A Whole New Way to Learn!</strong><span>Amble Beats by Invengic</span></div>
   </div>
+</section>
+
+<section class="mdl-section" id="model" aria-labelledby="mdlTitle">
+  <div class="mdl-scene">
+    <header class="mdl-top"><div class="mdl-eyebrow">A little music, a lot of wonder</div><h2 id="mdlTitle">Meet Amble Beats</h2><p>Wave your hand near the sensors and let the music follow.</p></header>
+    <div class="mdl-stage" aria-label="Interactive Amble Beats music instrument">
+      <div class="mdl-instrument">
+        <picture><source srcset="assets/amble-beats-instrument.webp" type="image/webp"><img src="assets/amble-beats-instrument.jpg" alt="Amble Beats wooden musical instrument with eight sensors, a screen and a mode knob" width="2048" height="744" loading="lazy" decoding="async"></picture>
+        <div class="mdl-screen" id="mdlScreen">SARGAM<small>READY</small></div>
+        <div class="mdl-callout mdl-hand-callout"><span class="mdl-hand" aria-hidden="true">👋</span><span>Wave your hand near the sensors to play!</span></div>
+        <div class="mdl-callout mdl-mode-callout">Change mode<br>from here</div>
+        <button class="mdl-sensor" style="left:7.2%;top:38.8%" aria-label="Play sensor 1" title="Wave or hover here"></button>
+        <button class="mdl-sensor" style="left:16.9%;top:43.4%;--d:.2s" aria-label="Play sensor 2" title="Wave or hover here"></button>
+        <button class="mdl-sensor" style="left:27%;top:48.2%;--d:.4s" aria-label="Play sensor 3" title="Wave or hover here"></button>
+        <button class="mdl-sensor" style="left:37.7%;top:53.2%;--d:.6s" aria-label="Play sensor 4" title="Wave or hover here"></button>
+        <button class="mdl-sensor" style="left:52.2%;top:59.8%;--d:.8s" aria-label="Play sensor 5" title="Wave or hover here"></button>
+        <button class="mdl-sensor" style="left:62.2%;top:64.9%;--d:1s" aria-label="Play sensor 6" title="Wave or hover here"></button>
+        <button class="mdl-sensor" style="left:73.1%;top:70.2%;--d:1.2s" aria-label="Play sensor 7" title="Wave or hover here"></button>
+        <button class="mdl-sensor" style="left:84.5%;top:76%;--d:1.4s" aria-label="Play sensor 8" title="Wave or hover here"></button>
+        <button class="mdl-knob" id="mdlKnob" aria-label="Rotate mode knob" title="Click to change mode"></button>
+      </div>
+    </div>
+    <div class="mdl-mobile-hint">👋 Tap a sensor to play · tap the knob to change mode</div>
+    <div class="mdl-volume"><div class="mdl-volume-title"><span class="mdl-speaker" aria-hidden="true">🔊</span><span>Volume</span></div><div class="mdl-volume-row"><input id="mdlVolume" type="range" min="0" max="100" value="70" aria-label="Volume"><span class="mdl-volume-label" id="mdlVolLabel">70%</span></div></div>
+    <div class="mdl-footer">Mode: <span class="mdl-status" id="mdlMode">SARGAM</span> · Use the rotary knob to switch to DRUM SET.</div>
+  </div>
+  <div class="mdl-toast" id="mdlToast" role="status">DRUM SET mode · Wave near a sensor to play</div>
 </section>
 
 <section class="hero" id="hero">
@@ -847,6 +921,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
       <div class="application-card"><h3>Learning Spaces</h3><p>A physical, multi-sensory experience that adds an interactive layer to the space.</p></div>
       <div class="application-card"><h3>Institutions</h3><p>A modular installation that can be adapted to the environment.</p></div>
     </div>
+    <a class="application-card" href="health.html" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:14px;border:3px solid var(--ink);background:#fff0f6"><div><h3>Health, therapy &amp; rehab</h3><p>The same system, designed for physiotherapy, occupational therapy and rehabilitation sessions.</p></div><b style="white-space:nowrap">Explore Amble Beats for Health →</b></a>
   </div>
 </section>
 
@@ -934,6 +1009,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
     </div>
   </div>
 </section>
+<script src="amble-sound.js"></script>
 <script>
 (()=>{
 'use strict';
@@ -967,8 +1043,8 @@ function createNoise(dur,type='white'){
   for(let i=0;i<d.length;i++){const t=i/d.length; d[i]=(Math.random()*2-1)*Math.pow(1-t, type==='crash'?0.75:1.35)}
   return b;
 }
-function playNote(note){const c=ctx;if(!c||c.state!=='running')return false;const now=c.currentTime;if(now-lastSound<.055)return false;lastSound=now;const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(notes[note]||440,now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.28,now+.012);g.gain.exponentialRampToValueAtTime(.0001,now+.42);o.connect(g);g.connect(master);o.start();o.stop(now+.44);return true}
-function playDrum(type){const c=ctx;if(!c||c.state!=='running')return false;const now=c.currentTime;if(now-lastSound<.045)return false;lastSound=now;
+function playNote(note){const c=ctx;if(!c||c.state!=='running')return false;const now=c.currentTime;if(now-lastSound<.055)return false;lastSound=now;if(window.AmbleSound&&AmbleSound.note(c,note,1,master))return true;const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(notes[note]||440,now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.28,now+.012);g.gain.exponentialRampToValueAtTime(.0001,now+.42);o.connect(g);g.connect(master);o.start();o.stop(now+.44);return true}
+function playDrum(type){const c=ctx;if(!c||c.state!=='running')return false;const now=c.currentTime;if(now-lastSound<.045)return false;lastSound=now;if(window.AmbleSound&&AmbleSound.drum(c,type,1,master))return true;
   if(type==='kick'||type==='tom1'||type==='tom2'){const base=type==='kick'?150:type==='tom1'?180:125;const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(base,now);o.frequency.exponentialRampToValueAtTime(type==='kick'?52:70,now+.16);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.55,now+.006);g.gain.exponentialRampToValueAtTime(.0001,now+.26);o.connect(g);g.connect(master);o.start();o.stop(now+.28);return true}
   if(type==='hihat'||type==='shaker'||type==='crash'){const dur=type==='crash'?.7:type==='shaker'?.18:.12,b=createNoise(dur,type==='crash'?'crash':'white'),n=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();f.type='highpass';f.frequency.setValueAtTime(type==='crash'?1800:5000,now);g.gain.setValueAtTime(type==='crash'?.18:.22,now);g.gain.exponentialRampToValueAtTime(.0001,now+dur);n.buffer=b;n.connect(f);f.connect(g);g.connect(master);n.start();n.stop(now+dur);return true}
   if(type==='snare'){const b=createNoise(.22,'white'),n=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();f.type='bandpass';f.frequency.setValueAtTime(1800,now);f.Q.value=.7;g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.42,now+.005);g.gain.exponentialRampToValueAtTime(.0001,now+.2);n.buffer=b;n.connect(f);f.connect(g);g.connect(master);n.start();n.stop(now+.22);const o=c.createOscillator(),og=c.createGain();o.type='triangle';o.frequency.setValueAtTime(190,now);og.gain.setValueAtTime(.0001,now);og.gain.exponentialRampToValueAtTime(.18,now+.005);og.gain.exponentialRampToValueAtTime(.0001,now+.11);o.connect(og);og.connect(master);o.start();o.stop(now+.12);return true}
@@ -1194,6 +1270,47 @@ document.querySelectorAll('.goal-btn').forEach(b=>b.addEventListener('click',()=
 document.querySelectorAll('.featured-activity').forEach(el=>el.addEventListener('click',()=>{const title=el.querySelector('b').textContent.replace(/^\S+\s/,'');const a=activities.find(x=>x.t.toLowerCase()===title.toLowerCase());if(a)show(a)}));
 document.querySelectorAll('.play-tab').forEach(b=>b.addEventListener('click',()=>render(b.dataset.cat)));
 document.getElementById('mainSurprise').addEventListener('click',surprise);document.getElementById('surpriseBtn').addEventListener('click',surprise);render();
+})();
+</script>
+
+<script>
+/* Interactive instrument model: hover (mouse) or tap a sensor to play; the knob switches SARGAM / DRUM SET */
+(()=>{
+const root=document.getElementById('model');if(!root)return;
+const sensors=[...root.querySelectorAll('.mdl-sensor')],knob=document.getElementById('mdlKnob'),modeEl=document.getElementById('mdlMode'),toast=document.getElementById('mdlToast'),vol=document.getElementById('mdlVolume'),volLabel=document.getElementById('mdlVolLabel'),screen=document.getElementById('mdlScreen');
+let mode='sargam',audioCtx=null,lastToast;
+const noteNames=['C4','D4','E4','F4','G4','A4','B4','C5'],freqs=[261.63,293.66,329.63,349.23,392,440,493.88,523.25],sargam=['SA','RE','GA','MA','PA','DHA','NI','SA ↑'];
+const drumNames=['kick','snare','hihat','shaker','tom1','clap','tom2','crash'];
+const level=()=>Number(vol.value)/100;
+function getCtx(){if(!audioCtx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;try{audioCtx=new AC()}catch(e){return null}}return audioCtx}
+/* Play only when audio is running; a request that waits on resume() for more than 400 ms is dropped so no burst of stale notes plays later */
+function withAudio(fn){const c=getCtx();if(!c)return;if(c.state==='running'){fn(c);return}const t=performance.now();c.resume().then(()=>{if(c.state==='running'&&performance.now()-t<400)fn(c)}).catch(()=>{})}
+function tone(c,freq,duration=.42,type='sine',gain=.22){const o=c.createOscillator(),g=c.createGain(),now=c.currentTime;o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(Math.max(.0002,gain*level()),now+.018);g.gain.exponentialRampToValueAtTime(.0001,now+duration);o.connect(g);g.connect(c.destination);o.start(now);o.stop(now+duration+.03)}
+function synthDrum(c,i){const now=c.currentTime,master=c.createGain();master.gain.value=level();master.connect(c.destination);
+  function osc(type,freq,endFreq,dur,amp){const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,now);if(endFreq)o.frequency.exponentialRampToValueAtTime(Math.max(1,endFreq),now+dur);g.gain.setValueAtTime(Math.max(.0001,amp),now);g.gain.exponentialRampToValueAtTime(.0001,now+dur);o.connect(g);g.connect(master);o.start(now);o.stop(now+dur+.02)}
+  function noise(dur,filterType,cutoff,amp){const b=c.createBuffer(1,Math.ceil(c.sampleRate*dur),c.sampleRate),d=b.getChannelData(0);for(let j=0;j<d.length;j++)d[j]=(Math.random()*2-1)*(1-j/d.length);const n=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();n.buffer=b;f.type=filterType;f.frequency.value=cutoff;g.gain.setValueAtTime(amp,now);g.gain.exponentialRampToValueAtTime(.0001,now+dur);n.connect(f);f.connect(g);g.connect(master);n.start(now);n.stop(now+dur)}
+  switch(i){case 0:osc('sine',150,42,.34,.85);break;case 1:noise(.2,'highpass',1400,.65);osc('triangle',190,90,.12,.25);break;case 2:noise(.075,'highpass',6500,.5);break;case 3:noise(.32,'highpass',4200,.45);break;case 4:osc('sine',220,115,.22,.65);osc('triangle',430,210,.16,.25);break;case 5:noise(.18,'bandpass',1800,.75);break;case 6:osc('square',850,240,.075,.35);noise(.055,'highpass',3000,.22);break;case 7:noise(.65,'highpass',7500,.62);break}}
+function setScreen(title,sub){screen.textContent=title;const s=document.createElement('small');s.textContent=sub;screen.appendChild(s)}
+function play(i){
+  sensors.forEach(s=>s.classList.remove('active'));sensors[i].classList.add('active');
+  if(mode==='sargam'){setScreen('SARGAM',sargam[i]);withAudio(c=>{if(!(window.AmbleSound&&AmbleSound.note(c,noteNames[i],level()*1.6)))tone(c,freqs[i])})}
+  else{setScreen('DRUM SET','PAD '+(i+1)+'/8');withAudio(c=>{if(!(window.AmbleSound&&AmbleSound.drum(c,drumNames[i],level()*1.6)))synthDrum(c,i)})}
+}
+sensors.forEach((s,i)=>{
+  s.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')play(i)});
+  s.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')play(i)});
+  s.addEventListener('click',e=>{if(e.detail===0||e.pointerType==='mouse')play(i)});
+});
+function toggleMode(){
+  mode=mode==='sargam'?'drum':'sargam';
+  modeEl.textContent=mode==='sargam'?'SARGAM':'DRUM SET';
+  setScreen(mode==='sargam'?'SARGAM':'DRUM SET',mode==='sargam'?'READY':'8 SOUNDS');
+  toast.textContent=mode==='sargam'?'SARGAM mode · Sa Re Ga Ma Pa Dha Ni Sa':'DRUM SET mode · Eight distinct percussion sounds';
+  toast.classList.add('show');clearTimeout(lastToast);lastToast=setTimeout(()=>toast.classList.remove('show'),2300);
+  withAudio(c=>{const ok=window.AmbleSound&&(mode==='sargam'?AmbleSound.note(c,'C5',level()*.6):AmbleSound.drum(c,'tom2',level()*.7));if(!ok)tone(c,mode==='sargam'?523.25:180,.18,mode==='sargam'?'sine':'triangle')});
+}
+knob.addEventListener('click',toggleMode);
+vol.addEventListener('input',()=>{volLabel.textContent=vol.value+'%'});
 })();
 </script>
 
