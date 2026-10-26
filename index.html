@@ -152,6 +152,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 .sales-inner{width:min(1120px,100%);margin:auto}
 .sales-kicker{font-size:11px;font-weight:950;letter-spacing:.16em;text-transform:uppercase;opacity:.5;margin-bottom:13px}
 .sales-title{margin:0;font-size:clamp(40px,6vw,76px);line-height:.9;letter-spacing:-.07em}
+.product-film-title{letter-spacing:.001em}
 .sales-lead{max-width:760px;font-size:clamp(16px,1.7vw,21px);line-height:1.5;opacity:.68;margin:18px 0 0}
 .video-section{padding:100px 24px;background:#fff}
 .video-wrap{width:min(1120px,100%);margin:38px auto 0;position:relative;border-radius:32px;overflow:hidden;background:#18100d;box-shadow:0 28px 70px rgba(36,20,14,.14)}
@@ -580,7 +581,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 <style>
 /* Interactive instrument model */
 .mdl-section{color:#493025;background:radial-gradient(ellipse at 12% 14%,#ffe5a7 0,transparent 25%),radial-gradient(ellipse at 88% 20%,#d7f0f7 0,transparent 27%),radial-gradient(ellipse at 75% 88%,#f9d6e8 0,transparent 26%),linear-gradient(135deg,#fffaf1,#f5f0ff);overflow:hidden}
-.mdl-scene{max-width:1500px;margin:auto;padding:84px 24px 64px;display:flex;flex-direction:column;gap:16px}
+.mdl-scene{max-width:1500px;margin:auto;padding:128px 24px 64px;display:flex;flex-direction:column;gap:16px}
 .mdl-top{text-align:center}
 .mdl-eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:#9b6d54}
 .mdl-top h2{font-size:clamp(26px,4vw,48px);line-height:1.05;margin:7px 0 8px;letter-spacing:-.04em}
@@ -621,7 +622,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 .mdl-toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#fffdf8;border:1px solid #fff;box-shadow:0 12px 35px #65422c25;padding:12px 18px;border-radius:18px;font-weight:750;transition:.25s;z-index:95;color:#493025}
 .mdl-toast.show{opacity:1;transform:translate(-50%,0)}
 .mdl-mobile-hint{display:none;text-align:center;font-size:13px;font-weight:800;color:#684536}
-@media(max-width:650px){.mdl-scene{padding:60px 10px 44px;gap:12px}.mdl-stage{border-radius:18px}.mdl-callout{display:none}.mdl-mobile-hint{display:block}.mdl-volume{padding:9px 11px;gap:10px;flex-wrap:wrap;justify-content:center}.mdl-volume .mdl-volume-row{width:100%;max-width:260px}.mdl-hand-callout:after{width:18px}.mdl-callout{border-radius:13px}.mdl-top p{font-size:13px}}
+@media(max-width:650px){.mdl-scene{padding:108px 10px 44px;gap:12px}.mdl-stage{border-radius:18px}.mdl-callout{display:none}.mdl-mobile-hint{display:block}.mdl-volume{padding:9px 11px;gap:10px;flex-wrap:wrap;justify-content:center}.mdl-volume .mdl-volume-row{width:100%;max-width:260px}.mdl-hand-callout:after{width:18px}.mdl-callout{border-radius:13px}.mdl-top p{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.mdl-sensor:before,.mdl-hand{animation:none}}
 </style>
 </head>
@@ -679,24 +680,12 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 
 <nav class="nav"><div class="brand">amble <b>beats</b></div><div class="navlinks"><a href="#top">Home</a><a href="#how-it-works">How it works</a><a href="#setups">Setups</a><a href="#ways-to-play">Activities</a><a href="#applications">Applications</a><a href="health.html">Health</a><a href="#contact">Contact</a></div><div style="display:flex;gap:8px;align-items:center"><a class="plan-top" href="#ways-to-play">Plan an Activity</a><a class="quote" href="mailto:sales@invengic.in?subject=Amble%20Beats%20Demo&body=Hello%20Invengic%2C%0A%0AI%20would%20like%20to%20book%20a%20demo%20of%20Amble%20Beats.%0A%0AName%3A%0ASchool%2FOrganisation%3A%0ACity%3A%0APhone%3A" aria-label="Email Invengic to book an Amble Beats demo">Book a Demo</a></div></nav>
 <main>
-<section class="video-section" id="top">
-  <div class="sales-inner">
-    <div class="sales-kicker">See Amble Beats in action</div>
-    <h2 class="sales-title">Turning your movement<br>into melodies.</h2>
-    <p class="sales-lead">A real-world interactive experience where children move, listen, explore and create sound together.</p>
-    <div class="video-embed" aria-label="Amble Beats product video">
-      <iframe src="https://www.youtube-nocookie.com/embed/coY2DUt8px8?rel=0&amp;modestbranding=1" title="One Installation. 75+ Activities. A Whole New Way to Learn! | Amble Beats by Invengic" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-    </div>
-    <div class="video-caption"><strong>One Installation. 75+ Activities. A Whole New Way to Learn!</strong><span>Amble Beats by Invengic</span></div>
-  </div>
-</section>
-
 <section class="mdl-section" id="model" aria-labelledby="mdlTitle">
   <div class="mdl-scene">
     <header class="mdl-top"><div class="mdl-eyebrow">A little music, a lot of wonder</div><h2 id="mdlTitle">Meet Amble Beats</h2><p>Wave your hand near the sensors and let the music follow.</p></header>
     <div class="mdl-stage" aria-label="Interactive Amble Beats music instrument">
       <div class="mdl-instrument">
-        <picture><source srcset="assets/amble-beats-instrument.webp" type="image/webp"><img src="assets/amble-beats-instrument.jpg" alt="Amble Beats wooden musical instrument with eight sensors, a screen and a mode knob" width="2048" height="744" loading="lazy" decoding="async"></picture>
+        <picture><source srcset="assets/amble-beats-instrument.webp" type="image/webp"><img src="assets/amble-beats-instrument.jpg" alt="Amble Beats wooden musical instrument with eight sensors, a screen and a mode knob" width="2048" height="744" fetchpriority="high" decoding="async"></picture>
         <div class="mdl-screen" id="mdlScreen">SARGAM<small>READY</small></div>
         <div class="mdl-callout mdl-hand-callout"><span class="mdl-hand" aria-hidden="true">👋</span><span>Wave your hand near the sensors to play!</span></div>
         <div class="mdl-callout mdl-mode-callout">Change mode<br>from here</div>
@@ -716,6 +705,18 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
     <div class="mdl-footer">Mode: <span class="mdl-status" id="mdlMode">SARGAM</span> · Use the rotary knob to switch to DRUM SET.</div>
   </div>
   <div class="mdl-toast" id="mdlToast" role="status">DRUM SET mode · Wave near a sensor to play</div>
+</section>
+
+<section class="video-section">
+  <div class="sales-inner">
+    <div class="sales-kicker">See Amble Beats in action</div>
+    <h2 class="sales-title product-film-title">Turning your movement<br>into melodies.</h2>
+    <p class="sales-lead">A real-world interactive experience where children move, listen, explore and create sound together.</p>
+    <div class="video-embed" aria-label="Amble Beats product video">
+      <iframe src="https://www.youtube.com/embed/coY2DUt8px8?rel=0&amp;modestbranding=1" title="One Installation. 75+ Activities. A Whole New Way to Learn! | Amble Beats by Invengic" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+    <div class="video-caption"><strong>One Installation. 75+ Activities. A Whole New Way to Learn!</strong><span>Amble Beats by Invengic</span></div>
+  </div>
 </section>
 
 <section class="hero" id="hero">
@@ -860,7 +861,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
     <h2 class="sales-title">See how it works.</h2>
     <p class="sales-lead">A closer look at the interaction, the system and the two ways Amble Beats can be configured.</p>
     <div class="video-embed" aria-label="Amble Beats how it works video">
-      <iframe src="https://www.youtube-nocookie.com/embed/IcvXNFbRvZc?rel=0&modestbranding=1" title="Amble Beats — How It Works" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      <iframe src="https://www.youtube.com/embed/IcvXNFbRvZc?rel=0&modestbranding=1" title="Amble Beats — How It Works" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
     <div class="video-caption"><strong>How Amble Beats Works</strong><span>Explainer video</span></div>
   </div>
@@ -1014,7 +1015,7 @@ a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
 (()=>{
 'use strict';
 const AudioCtx=window.AudioContext||window.webkitAudioContext;
-let ctx=null,lastSound=0,activeIndex=-1,gestureSeen=false;
+let ctx=null,lastSound=0,activeIndex=-1;
 const notes={C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392,A4:440,B4:493.88,C5:523.25};
 const hero=document.getElementById('hero'),stage=document.getElementById('stage'),box=document.getElementById('box');
 const chars=[...document.querySelectorAll('.hero .singer')];
@@ -1037,7 +1038,7 @@ function ensureAudio(){
   }
   return ctx;
 }
-async function unlock(){const c=ensureAudio();if(!c)return false;if(c.state==='suspended'){try{await c.resume()}catch(e){return false}}gestureSeen=true;return c.state==='running'}
+async function unlock(){const c=ensureAudio();if(!c)return false;if(c.state==='suspended'){try{await c.resume()}catch(e){return false}}return c.state==='running'}
 function createNoise(dur,type='white'){
   const c=ctx,b=c.createBuffer(1,Math.floor(c.sampleRate*dur),c.sampleRate),d=b.getChannelData(0);
   for(let i=0;i<d.length;i++){const t=i/d.length; d[i]=(Math.random()*2-1)*Math.pow(1-t, type==='crash'?0.75:1.35)}
@@ -1053,7 +1054,8 @@ function playDrum(type){const c=ctx;if(!c||c.state!=='running')return false;cons
 function bigNote(el){const n=document.createElement('span');n.className='music-note-float big-show';n.textContent=Math.random()>.5?'♪':'♫';n.style.color=getComputedStyle(el).backgroundColor||'var(--pink)';n.setAttribute('aria-hidden','true');el.appendChild(n);requestAnimationFrame(()=>n.classList.add('fly'));setTimeout(()=>n.remove(),1150)}
 function pulseVisual(el,boxEl){el.classList.remove('active');void el.offsetWidth;el.classList.add('active');bigNote(el);if(boxEl){boxEl.classList.remove('playing');void boxEl.offsetWidth;boxEl.classList.add('playing');setTimeout(()=>boxEl.classList.remove('playing'),620)}setTimeout(()=>el.classList.remove('active'),650)}
 async function triggerHero(i){const el=chars[i];if(!el)return;pulseVisual(el,box);const ok=await unlock();if(!ok)return;if(el.dataset.drum)playDrum(el.dataset.drum);else playNote(el.dataset.note)}
-function showScene(i,doPlay){i=Math.max(0,Math.min(9,i));box.classList.add('scene-show');chars.forEach((c,k)=>c.classList.toggle('show',k===i));dots.forEach((d,k)=>d.classList.toggle('on',k===i));const c=chars[i];if(kicker){kicker.textContent=`${String(i+1).padStart(2,'0')} • ${c.dataset.kicker||''}`}if(title)title.textContent=c.dataset.title||'';if(sub)sub.textContent=c.dataset.sub||'';if(doPlay){box.classList.remove('playing');void box.offsetWidth;box.classList.add('playing');triggerHero(i)}}
+// Scrolling only animates the scene; sound plays when a character is tapped.
+function showScene(i,pulse){i=Math.max(0,Math.min(9,i));box.classList.add('scene-show');chars.forEach((c,k)=>c.classList.toggle('show',k===i));dots.forEach((d,k)=>d.classList.toggle('on',k===i));const c=chars[i];if(kicker){kicker.textContent=`${String(i+1).padStart(2,'0')} • ${c.dataset.kicker||''}`}if(title)title.textContent=c.dataset.title||'';if(sub)sub.textContent=c.dataset.sub||'';if(pulse)pulseVisual(c,box)}
 async function manualUnlock(){await unlock()}
 chars.forEach((c,i)=>c.addEventListener('pointerdown',e=>{e.preventDefault();triggerHero(i)}));
 function tapSensor(s, boxEl, kind){
@@ -1092,24 +1094,18 @@ function sectionProgress(el){
   if(window.scrollY<start || window.scrollY>end) return -1;
   return Math.max(0,Math.min(.999999,(window.scrollY-start)/Math.max(1,end-start)));
 }
-function playScrollNote(index){
+// Scroll pulses are visual only — no sound plays while scrolling.
+function pulseScrollNote(index){
   const s=floorSensors[index]; if(!s)return;
   pulseVisual(s,document.querySelector('#setup1 .setup-box'));
-  unlock().then(ok=>{if(ok)playNote(s.dataset.note)});
 }
-function playScrollDrum(index){
+function pulseScrollDrum(index){
   const setup2El=document.getElementById('setup2');
   const r=setup2El.getBoundingClientRect();
   const visible=r.bottom>window.innerHeight*.18 && r.top<window.innerHeight*.82;
   const s=drumSensors[index];
   if(!s || !visible) return;
   pulseVisual(s,drumBox);
-  unlock().then(ok=>{
-    if(!ok) return;
-    const rr=setup2El.getBoundingClientRect();
-    const stillVisible=rr.bottom>window.innerHeight*.12 && rr.top<window.innerHeight*.88;
-    if(stillVisible) playDrum(s.dataset.drum);
-  });
 }
 const scrollCue=document.getElementById('scrollCue'),finaleEl=document.getElementById('finale');
 function updateScrollCue(){
@@ -1135,7 +1131,7 @@ function scrollUpdate(){
   const q1=sectionProgress(document.getElementById('setup1'));
   if(q1>=0){
     const fi=Math.min(7,Math.max(0,Math.floor(q1*8)));
-    if(fi!==lastFloorIndex){lastFloorIndex=fi;playScrollNote(fi)}
+    if(fi!==lastFloorIndex){lastFloorIndex=fi;pulseScrollNote(fi)}
   } else lastFloorIndex=-1;
   const setup2El=document.getElementById('setup2');
   const q2=sectionProgress(setup2El);
@@ -1143,7 +1139,7 @@ function scrollUpdate(){
     const di=Math.min(7,Math.max(0,Math.floor(q2*8)));
     if(di!==lastDrumIndex){
       lastDrumIndex=di;
-      playScrollDrum(di);
+      pulseScrollDrum(di);
     }
   } else {
     // Do not allow the drum-set sequence to spill into the content below Setup 2.
@@ -1153,7 +1149,6 @@ function scrollUpdate(){
 window.addEventListener('scroll',scrollUpdate,{passive:true});window.addEventListener('resize',scrollUpdate,{passive:true});
 showScene(0,false);
 updateScrollCue();
-setTimeout(()=>{unlock().then(ok=>{if(ok&&!gestureSeen){triggerHero(0)}})},180);
 })();
 </script>
 
@@ -1296,8 +1291,12 @@ function play(i){
   if(mode==='sargam'){setScreen('SARGAM',sargam[i]);withAudio(c=>{if(!(window.AmbleSound&&AmbleSound.note(c,noteNames[i],level()*1.6)))tone(c,freqs[i])})}
   else{setScreen('DRUM SET','PAD '+(i+1)+'/8');withAudio(c=>{if(!(window.AmbleSound&&AmbleSound.drum(c,drumNames[i],level()*1.6)))synthDrum(c,i)})}
 }
+/* Browsers also fire pointerenter when a key scrolls under a still cursor. Those events repeat the last
+   pointermove position, so only an enter at a new position counts as a hover — scrolling stays silent. */
+let lastX=-1,lastY=-1;
+window.addEventListener('pointermove',e=>{lastX=e.clientX;lastY=e.clientY},{passive:true});
 sensors.forEach((s,i)=>{
-  s.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')play(i)});
+  s.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'&&(e.clientX!==lastX||e.clientY!==lastY))play(i)});
   s.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')play(i)});
   s.addEventListener('click',e=>{if(e.detail===0||e.pointerType==='mouse')play(i)});
 });
