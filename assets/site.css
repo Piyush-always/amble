@@ -1,0 +1,123 @@
+/* Shared styles for every Amble Beats page.
+   Palette is taken from the instrument itself: sensor black, wood, the amber under-glow. */
+:root{
+  --ink:#24140e;--paper:#fff;--stone:#f3f1ed;--line:rgba(36,20,14,.13);
+  --muted:#6a5c53;--wood:#a3532a;--glow:#f2a33a;--ok:#1d7a43;--bad:#b3261e;
+  --sans:"Anek Latin",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2{font-weight:600;font-stretch:112%}
+h3,h4{font-weight:600}
+::selection{background:var(--glow);color:var(--ink)}
+:focus-visible{outline:3px solid var(--wood);outline-offset:3px}
+
+/* Wordmark, matching the engraving on the instrument */
+.brand{display:inline-flex;align-items:center;gap:8px;font-size:22px;font-weight:600;font-stretch:112%;letter-spacing:-.01em;color:var(--ink);white-space:nowrap}
+.brand-mark{width:15px;height:20px;fill:var(--wood);flex:none}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;white-space:nowrap;min-height:48px;padding:12px 24px;border-radius:999px;font:inherit;font-size:16px;font-weight:600;line-height:1.1;text-decoration:none;cursor:pointer;border:1px solid var(--ink);transition:background-color .15s ease,color .15s ease}
+.btn-primary{background:var(--ink);color:#fff}
+.btn-primary:hover{background:#3d2a21}
+.btn-ghost{background:transparent;color:var(--ink)}
+.btn-ghost:hover{background:var(--stone)}
+.btn[disabled]{opacity:.55;cursor:progress}
+.icon{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+/* A value that still needs confirming by Invengic. Visible on purpose so it cannot ship unnoticed. */
+.tbc{background:#fff0c7;box-shadow:0 0 0 2px #fff0c7;border-bottom:1px dashed #b07a00;border-radius:2px}
+
+/* Lead-form status line */
+.form-status{grid-column:1/-1;margin:4px 0 0;font-size:15px;line-height:1.5;min-height:0}
+.form-status:empty{display:none}
+.form-status.ok{color:var(--ok)}
+.form-status.err{color:var(--bad)}
+.hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
+
+/* Footer */
+.site-footer{background:var(--ink);color:#f4ece6;padding:64px 24px 28px;font-size:15px;line-height:1.6}
+.site-footer a{color:inherit;text-decoration:none}
+.site-footer a:hover{text-decoration:underline}
+.site-footer-inner{width:min(1120px,100%);margin:auto;display:grid;grid-template-columns:minmax(220px,1.1fr) 2fr;gap:40px}
+.site-footer .brand{color:#fff}
+.site-footer .brand-mark{fill:var(--glow)}
+.site-footer-brand p{margin:14px 0 0;color:#cbbdb3;max-width:340px}
+.site-footer nav{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.site-footer nav h2{margin:0 0 10px;font-size:14px;font-weight:600;font-stretch:100%;color:#cbbdb3}
+.site-footer nav a{display:block;padding:3px 0}
+.site-footer-legal{width:min(1120px,100%);margin:44px auto 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.14);color:#a8988d;font-size:13px}
+@media(max-width:860px){.site-footer-inner{grid-template-columns:1fr}.site-footer nav{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- Simple pages: checkout, order status, policies ---------- */
+.simple{margin:0;background:var(--paper);color:var(--ink);font-size:17px;line-height:1.6}
+.simple a{color:inherit}
+.simple-head{display:flex;align-items:center;justify-content:space-between;gap:16px;width:min(1120px,calc(100% - 32px));margin:0 auto;padding:22px 0;border-bottom:1px solid var(--line)}
+.simple-head a{text-decoration:none}
+.simple-head .back{font-size:15px;color:var(--muted)}
+.simple-head .back:hover{color:var(--ink)}
+.simple-main{width:min(1120px,calc(100% - 32px));margin:0 auto;padding:48px 0 88px}
+
+/* Policy text */
+.prose{max-width:720px}
+.prose h1{font-size:clamp(36px,5vw,52px);line-height:1.02;letter-spacing:-.012em;margin:0 0 10px}
+.prose .updated{color:var(--muted);margin:0 0 36px}
+.prose h2{font-size:23px;line-height:1.2;margin:40px 0 10px;font-stretch:105%}
+.prose p,.prose li{color:#3b2c24}
+.prose ul{padding-left:20px}
+.prose li{margin:6px 0}
+.prose address{font-style:normal}
+
+/* Checkout */
+.checkout{display:grid;grid-template-columns:1fr minmax(300px,400px);gap:56px;align-items:start}
+.checkout h1{font-size:clamp(34px,4.4vw,48px);line-height:1.02;margin:0 0 8px}
+.checkout .sub{color:var(--muted);margin:0 0 32px}
+.fieldset{border:0;padding:0;margin:0 0 30px}
+.fieldset legend{font-size:19px;font-weight:600;padding:0;margin-bottom:14px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+.field label{font-size:15px;font-weight:500}
+.field label .opt{color:var(--muted);font-weight:400}
+.field input,.field select,.field textarea{font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1px solid rgba(36,20,14,.28);border-radius:10px;padding:12px 13px;min-height:48px;width:100%}
+.field textarea{min-height:92px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--wood);outline-offset:0;border-color:var(--wood)}
+.field input[aria-invalid="true"]{border-color:var(--bad)}
+.field .hint{font-size:14px;color:var(--muted)}
+.field .err-msg{font-size:14px;color:var(--bad)}
+.field .err-msg:empty{display:none}
+.pay-row{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.pay-row .btn{min-width:260px;min-height:54px;font-size:17px}
+.secure{font-size:14px;color:var(--muted);margin:0;max-width:520px}
+.notice{border:1px solid var(--line);border-left:4px solid var(--glow);border-radius:10px;padding:14px 16px;margin:0 0 26px;background:#fffaf0}
+.notice.err{border-left-color:var(--bad);background:#fdf3f2}
+.notice.ok{border-left-color:var(--ok);background:#f1f8f3}
+.notice p{margin:0}
+.notice p+p{margin-top:6px}
+.summary{position:sticky;top:24px;border:1px solid var(--line);border-radius:16px;padding:22px;background:#fff}
+.summary img{display:block;width:100%;height:auto;border-radius:8px;background:#fff}
+.summary h2{font-size:22px;margin:16px 0 2px;font-stretch:108%}
+.summary .muted{color:var(--muted);font-size:15px;margin:0}
+.qty{display:flex;align-items:center;justify-content:space-between;margin:18px 0 6px}
+.qty-ctl{display:inline-flex;align-items:center;border:1px solid rgba(36,20,14,.28);border-radius:999px}
+.qty-ctl button{width:42px;height:42px;border:0;background:none;font-size:20px;color:var(--ink);border-radius:999px}
+.qty-ctl button:hover{background:var(--stone)}
+.qty-ctl output{min-width:28px;text-align:center;font-weight:600}
+.lines{margin:14px 0 0;padding:14px 0 0;border-top:1px solid var(--line)}
+.lines div{display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-size:15px}
+.lines .total{font-size:20px;font-weight:600;padding-top:10px}
+.next{margin:20px 0 0;padding:16px 0 0;border-top:1px solid var(--line);font-size:15px}
+.next h3{font-size:16px;margin:0 0 8px}
+.next ol{margin:0;padding-left:20px;color:#3b2c24}
+.next li{margin:4px 0}
+.policy-links{display:flex;flex-wrap:wrap;gap:6px 16px;margin:14px 0 0;font-size:14px}
+@media(max-width:900px){.checkout{grid-template-columns:1fr;gap:32px}.summary{position:static;order:-1}}
+@media(max-width:560px){.fields{grid-template-columns:1fr}.pay-row .btn{width:100%;min-width:0}.simple-main{padding-top:32px}}
+
+/* Order status */
+.status{max-width:640px}
+.status h1{font-size:clamp(34px,5vw,50px);line-height:1.04;margin:0 0 12px}
+.status .lead{font-size:19px;color:#3b2c24;margin:0 0 28px}
+.status dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 24px;margin:0 0 30px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.status dt{color:var(--muted)}
+.status dd{margin:0;font-weight:500}
+@media(prefers-reduced-motion:reduce){.btn{transition:none}}
