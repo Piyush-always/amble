@@ -1,0 +1,4 @@
+# Copy to .dev.vars for `npx wrangler dev`. .dev.vars is git-ignored: never commit real keys.
+RAZORPAY_KEY_SECRET=your_test_key_secret
+RAZORPAY_WEBHOOK_SECRET=any_long_random_string_also_entered_in_razorpay_webhook_settings
+RESEND_API_KEY=

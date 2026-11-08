@@ -5,6 +5,7 @@
   --muted:#6a5c53;--wood:#a3532a;--glow:#f2a33a;--ok:#1d7a43;--bad:#b3261e;
   --sans:"Anek Latin",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
 }
+*,*::before,*::after{box-sizing:border-box}
 body{font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 h1,h2{font-weight:600;font-stretch:112%}
 h3,h4{font-weight:600}
@@ -50,7 +51,7 @@ h3,h4{font-weight:600}
 
 /* ---------- Simple pages: checkout, order status, policies ---------- */
 .simple{margin:0;background:var(--paper);color:var(--ink);font-size:17px;line-height:1.6}
-.simple a{color:inherit}
+.simple a:not(.btn){color:inherit}
 .simple-head{display:flex;align-items:center;justify-content:space-between;gap:16px;width:min(1120px,calc(100% - 32px));margin:0 auto;padding:22px 0;border-bottom:1px solid var(--line)}
 .simple-head a{text-decoration:none}
 .simple-head .back{font-size:15px;color:var(--muted)}
@@ -88,7 +89,7 @@ h3,h4{font-weight:600}
 .pay-row{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
 .pay-row .btn{min-width:260px;min-height:54px;font-size:17px}
 .secure{font-size:14px;color:var(--muted);margin:0;max-width:520px}
-.notice{border:1px solid var(--line);border-left:4px solid var(--glow);border-radius:10px;padding:14px 16px;margin:0 0 26px;background:#fffaf0}
+.notice{border:1px solid var(--line);border-left:4px solid var(--glow);border-radius:10px;padding:14px 16px;margin:0 0 4px;background:#fffaf0;align-self:stretch}
 .notice.err{border-left-color:var(--bad);background:#fdf3f2}
 .notice.ok{border-left-color:var(--ok);background:#f1f8f3}
 .notice p{margin:0}
@@ -121,3 +122,4 @@ h3,h4{font-weight:600}
 .status dt{color:var(--muted)}
 .status dd{margin:0;font-weight:500}
 @media(prefers-reduced-motion:reduce){.btn{transition:none}}
+.fieldset legend .opt{color:var(--muted);font-weight:400;font-size:16px}

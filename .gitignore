@@ -1,0 +1,5 @@
+# Order API: dependencies, local state and secrets
+server/node_modules/
+server/.wrangler/
+server/.dev.vars
+.env
