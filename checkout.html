@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Checkout | Amble Beats</title>
+<meta name="description" content="Buy Amble Beats online. Pay by UPI, card or net banking through Razorpay.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#24140e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..125,300..700&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/config.js"></script>
+</head>
+<body class="simple">
+<header class="simple-head"><a class="brand" href="./" aria-label="Amble Beats home"><svg class="brand-mark" viewBox="0 0 15 20" aria-hidden="true"><path d="M7.4 0h1.9c.5 2.6 2.4 4 4 5.6 1.3 1.3 1.9 3 1.4 4.9-.2.7-.7.6-.7 0-.1-1.9-1.9-3.4-4.7-3.9v8.3c0 2.6-2.2 4.4-4.8 4.4C2 19.3 0 18 0 16.1c0-2 2.1-3.6 4.6-3.6.9 0 1.9.2 2.8.7z"/></svg>Amble Beats</a><a class="back" href="./#buy">Back to product details</a></header>
+<main class="simple-main">
+<div class="checkout">
+  <form id="checkout" novalidate>
+    <h1>Checkout</h1>
+    <p class="sub">Pay by UPI, card or net banking. It takes about two minutes.</p>
+    <fieldset class="fieldset">
+      <legend>Your details</legend>
+      <div class="fields">
+        <div class="field full"><label for="name">Full name</label><input id="name" autocomplete="name" maxlength="100" required></div>
+        <div class="field full"><label for="organisation">School or organisation</label><input id="organisation" autocomplete="organization" maxlength="150" required></div>
+        <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" maxlength="200" required></div>
+        <div class="field"><label for="phone">Mobile number</label><input id="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="98765 43210" required></div>
+        <div class="field full"><label for="gstin">GSTIN <span class="opt">(optional, for a GST invoice)</span></label><input id="gstin" maxlength="15" autocapitalize="characters" spellcheck="false"></div>
+      </div>
+    </fieldset>
+    <fieldset class="fieldset">
+      <legend>Delivery address</legend>
+      <div class="fields">
+        <div class="field full"><label for="line1">Address</label><input id="line1" autocomplete="address-line1" maxlength="200" placeholder="Building and street" required></div>
+        <div class="field full"><label for="line2">Area or landmark <span class="opt">(optional)</span></label><input id="line2" autocomplete="address-line2" maxlength="200"></div>
+        <div class="field"><label for="city">City</label><input id="city" autocomplete="address-level2" maxlength="100" required></div>
+        <div class="field"><label for="pincode">PIN code</label><input id="pincode" inputmode="numeric" autocomplete="postal-code" maxlength="6" required></div>
+        <div class="field full"><label for="state">State</label>
+          <select id="state" autocomplete="address-level1" required>
+            <option value="">Choose a state</option>
+            <option>Andaman and Nicobar Islands</option>
+            <option>Andhra Pradesh</option>
+            <option>Arunachal Pradesh</option>
+            <option>Assam</option>
+            <option>Bihar</option>
+            <option>Chandigarh</option>
+            <option>Chhattisgarh</option>
+            <option>Dadra and Nagar Haveli and Daman and Diu</option>
+            <option>Delhi</option>
+            <option>Goa</option>
+            <option>Gujarat</option>
+            <option>Haryana</option>
+            <option>Himachal Pradesh</option>
+            <option>Jammu and Kashmir</option>
+            <option>Jharkhand</option>
+            <option>Karnataka</option>
+            <option>Kerala</option>
+            <option>Ladakh</option>
+            <option>Lakshadweep</option>
+            <option>Madhya Pradesh</option>
+            <option>Maharashtra</option>
+            <option>Manipur</option>
+            <option>Meghalaya</option>
+            <option>Mizoram</option>
+            <option>Nagaland</option>
+            <option>Odisha</option>
+            <option>Puducherry</option>
+            <option>Punjab</option>
+            <option>Rajasthan</option>
+            <option>Sikkim</option>
+            <option>Tamil Nadu</option>
+            <option>Telangana</option>
+            <option>Tripura</option>
+            <option>Uttar Pradesh</option>
+            <option>Uttarakhand</option>
+            <option>West Bengal</option>
+          </select>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset class="fieldset">
+      <legend>Anything we should know? <span class="opt">(optional)</span></legend>
+      <div class="field"><textarea id="notes" maxlength="1000" aria-label="Delivery notes" placeholder="For example: the best time to deliver, or who to ask for at the school."></textarea></div>
+    </fieldset>
+    <div class="pay-row">
+      <div class="notice" id="notice" role="alert" hidden></div>
+      <button class="btn btn-primary" id="payBtn" type="submit">Pay ₹49,500</button>
+      <p class="secure">Razorpay handles the payment. We never see or store your card or UPI details. By paying you agree to our <a href="terms.html">terms of sale</a>.</p>
+    </div>
+  </form>
+  <aside class="summary" aria-label="Order summary">
+    <picture><source srcset="assets/amble-beats-instrument.webp" type="image/webp"><img src="assets/amble-beats-instrument.jpg" alt="" width="2048" height="744"></picture>
+    <h2>Amble Beats</h2>
+    <p class="muted">Wooden music instrument with eight sensors. Sargam and Drum set modes.</p>
+    <div class="qty"><span id="qtyLabel">Quantity</span>
+      <div class="qty-ctl" role="group" aria-labelledby="qtyLabel"><button type="button" id="qtyMinus" aria-label="One fewer">&minus;</button><output id="qty" aria-live="polite">1</output><button type="button" id="qtyPlus" aria-label="One more">+</button></div>
+    </div>
+    <p class="muted" id="qtyNote">Need more than 5? <a href="index.html#contact">Ask us for a quotation</a>.</p>
+    <div class="lines">
+      <div><span>Price</span><span id="unitPrice">₹49,500</span></div>
+      <div><span>Delivery</span><span class="tbc">Free</span></div>
+      <div class="total"><span>Total</span><span id="total">₹49,500</span></div>
+      <p class="muted"><span class="tbc">Inclusive of GST</span></p>
+    </div>
+    <div class="next">
+      <h3>What happens next</h3>
+      <ol>
+        <li>You see your order number as soon as the payment goes through.</li>
+        <li>We call you <span class="tbc">within one working day</span> to confirm the delivery date.</li>
+        <li>Delivery in <span class="tbc">7 to 10 working days</span>.</li>
+      </ol>
+    </div>
+    <div class="policy-links"><a href="shipping.html">Shipping</a><a href="refund.html">Returns and refunds</a><a href="terms.html">Terms of sale</a></div>
+  </aside>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="site-footer-brand">
+      <a class="brand" href="./"><svg class="brand-mark" viewBox="0 0 15 20" aria-hidden="true"><path d="M7.4 0h1.9c.5 2.6 2.4 4 4 5.6 1.3 1.3 1.9 3 1.4 4.9-.2.7-.7.6-.7 0-.1-1.9-1.9-3.4-4.7-3.9v8.3c0 2.6-2.2 4.4-4.8 4.4C2 19.3 0 18 0 16.1c0-2 2.1-3.6 4.6-3.6.9 0 1.9.2 2.8.7z"/></svg>Amble Beats</a>
+      <p>Designed and made by Invengic Ventures Pvt. Ltd.<br>Research Park, IIT Gandhinagar, Palaj, Gandhinagar 382355, Gujarat, India</p>
+    </div>
+    <nav aria-label="Footer">
+      <div><h2>Product</h2><a href="index.html#buy">Price and specifications</a><a href="checkout.html">Buy now</a><a href="health.html">For therapy and rehab</a></div>
+      <div><h2>Help</h2><a href="shipping.html">Shipping and installation</a><a href="refund.html">Returns and refunds</a><a href="index.html#faq">Questions</a></div>
+      <div><h2>Legal</h2><a href="terms.html">Terms of sale</a><a href="privacy.html">Privacy policy</a></div>
+      <div><h2>Contact</h2><a href="tel:+918511149747">+91 85111 49747</a><a href="mailto:sales@invengic.in">sales@invengic.in</a><a href="https://wa.me/918511149747">WhatsApp</a></div>
+    </nav>
+  </div>
+  <p class="site-footer-legal">© 2026 Invengic Ventures Pvt. Ltd.</p>
+</footer>
+<script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+<script src="assets/checkout.js" defer></script>
+</body>
+</html>
