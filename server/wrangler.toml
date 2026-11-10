@@ -23,4 +23,4 @@ MAIL_FROM = "Amble Beats <orders@invengic.in>"
 [[d1_databases]]
 binding = "DB"
 database_name = "amble-orders"
-database_id = "REPLACE_WITH_ID_FROM_wrangler_d1_create"
+database_id = "7572ddd0-9c78-40a7-b39a-03fa73a0ab58"
