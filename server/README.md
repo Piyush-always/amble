@@ -74,12 +74,38 @@ Without these, orders and enquiries are still saved, but nobody is emailed.
 
 ## Changing the price
 
-Change `PRODUCT.unitPrice` (in paise) in `src/worker.js` and deploy. Then update the ₹49,500 shown on the website: `index.html`, `health.html`, `checkout.html` and the JSON-LD block in `index.html`.
+Change `PRODUCT.unitPrice` and `PRODUCT.mrp` (in paise) in `src/worker.js` and deploy. Then update the prices shown on the website: `index.html` (hero, price section, FAQ and the JSON-LD block), `health.html`, `checkout.html` and `terms.html`.
+
+## Coupons
+
+Coupons live in the `coupons` table, so you can add, change or switch them off without touching the website. The server checks the code and works out the discount itself when it creates the Razorpay order. The browser can never set its own price.
+
+The two launch coupons are `AMBLE20` (20% off) and `AMBLE30` (30% off). The website shows the offers but not the codes; your team gives the codes out. A link like `https://amble.invengic.in/checkout.html?coupon=AMBLE20` opens the checkout with the code already applied.
+
+```sh
+# see all coupons and how many paid orders used each one
+npx wrangler d1 execute amble-orders --remote --command "SELECT c.code, c.percent_off, c.active, c.expires_at, c.max_uses, c.min_quantity, (SELECT COUNT(*) FROM orders o WHERE o.coupon_code = c.code AND o.status = 'paid') AS used FROM coupons c"
+
+# add a new code: 15% off, valid until 31 Dec 2026, for the first 50 paid orders, orders of 2 or more
+npx wrangler d1 execute amble-orders --remote --command "INSERT INTO coupons (code, percent_off, expires_at, max_uses, min_quantity, note, created_at) VALUES ('SCHOOL15', 15, '2026-12-31T23:59:59+05:30', 50, 2, 'School fair offer', datetime('now'))"
+
+# switch a code off (or on again with active = 1)
+npx wrangler d1 execute amble-orders --remote --command "UPDATE coupons SET active = 0 WHERE code = 'AMBLE30'"
+```
+
+Codes are upper case, 3 to 32 letters, digits or dashes. Discounts are between 1% and 90% and are rounded to whole rupees. A code with `max_uses` counts paid orders only, so unpaid checkouts do not use it up.
+
+**First-time setup for coupons** (once, on the existing database):
+
+```sh
+npx wrangler d1 execute amble-orders --remote --file=migrations/0002_coupons_and_country.sql
+```
 
 ## Development
 
 ```sh
-npm test                    # unit tests: pricing, validation, signatures, captures, webhooks, duplicates
+npm test                    # unit tests: pricing, coupons, validation, signatures, captures, webhooks, duplicates
+npm run test:browser        # browser tests of the site; needs the site on :8080 and test/dev-server.mjs running
 node test/dev-server.mjs    # local API on :8787 with a fake Razorpay, for trying the checkout without keys
 ```
 

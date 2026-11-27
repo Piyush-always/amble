@@ -26,7 +26,8 @@
     document.title = 'Order confirmed | Amble Beats';
     set('Thank you, ' + o.firstName + '. Your order is confirmed.',
       'Keep your order number for any questions. Our team has your details and will call you to arrange delivery.');
-    rows([['Order number', o.ref], ['Paid', rupees(o.amount)], ['Quantity', String(o.quantity)], ['Paid on', date(o.paidAt)], ['Email', o.email]]);
+    rows([['Order number', o.ref], ['Paid', rupees(o.amount)], ['Coupon', o.couponCode ? o.couponCode + ', ' + rupees(o.discount) + ' off' : ''],
+      ['Quantity', String(o.quantity)], ['Paid on', date(o.paidAt)], ['Email', o.email]]);
     next.innerHTML = '<div class="next" style="border-top:0;padding-top:0;margin:0 0 28px"><h3>What happens next</h3><ol>' +
       '<li>We call you <span class="tbc">within one working day</span> to confirm the delivery date.</li>' +
       '<li>Your GST invoice is emailed to you.</li>' +

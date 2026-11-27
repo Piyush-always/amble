@@ -5,14 +5,18 @@
    - POST /api/orders/verify    check the Razorpay signature, confirm capture with the Razorpay API, mark paid
    - GET  /api/orders/:ref      order status for the confirmation page (no personal details beyond a first name)
    - POST /api/razorpay/webhook Razorpay's server-to-server notice; catches payments whose browser tab closed
-   - POST /api/leads            demo / quotation requests
-   - GET  /api/product          price and quantity limit, so the checkout page shows what will be charged
+   - POST /api/leads            demo, quotation, bulk and international enquiries
+   - GET  /api/product          price, MRP and quantity limit, so the checkout page shows what will be charged
+   - POST /api/coupons/check    whether a coupon code applies, and the discounted total
+
+   Coupons live in the `coupons` table (see README): the server checks the code and computes the
+   discount when it creates the Razorpay order, so the browser can never set its own price.
 
    Secrets (wrangler secret put): RAZORPAY_KEY_SECRET, RAZORPAY_WEBHOOK_SECRET, RESEND_API_KEY (optional).
    Vars (wrangler.toml): RAZORPAY_KEY_ID, ALLOWED_ORIGINS, NOTIFY_EMAIL, MAIL_FROM. */
 
 // The only place the price is defined for charging. Amounts are in paise.
-export const PRODUCT = { sku: 'AMBLE-BEATS', name: 'Amble Beats', unitPrice: 4950000, currency: 'INR', maxQty: 5 };
+export const PRODUCT = { sku: 'AMBLE-BEATS', name: 'Amble Beats', unitPrice: 4620000, mrp: 5000000, currency: 'INR', maxQty: 5 };
 
 export const STATES = ['Andaman and Nicobar Islands', 'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chandigarh',
   'Chhattisgarh', 'Dadra and Nagar Haveli and Daman and Diu', 'Delhi', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh',
@@ -23,6 +27,7 @@ export const STATES = ['Andaman and Nicobar Islands', 'Andhra Pradesh', 'Arunach
 const GSTIN_RE = /^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
 const REF_ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'; // Crockford base32: no I, L, O, U
 const REF_RE = /^AMB-[0-9A-HJKMNP-TV-Z]{10}$/;
+const COUPON_RE = /^[A-Z0-9-]{3,32}$/;
 
 class HttpError extends Error {
   constructor(status, code) { super(code); this.status = status; this.code = code; }
@@ -50,6 +55,7 @@ export default {
       else if (path === '/api/orders/verify' && request.method === 'POST') res = await verifyOrder(request, env, ctx);
       else if (path.startsWith('/api/orders/') && request.method === 'GET') res = await orderStatus(path.slice(12), env);
       else if (path === '/api/leads' && request.method === 'POST') res = await createLead(request, env, ctx);
+      else if (path === '/api/coupons/check' && request.method === 'POST') res = await checkCoupon(request, env);
       else res = json({ error: 'not_found' }, 404);
     } catch (err) {
       res = err instanceof HttpError ? json({ error: err.code }, err.status) : serverError(err);
@@ -62,7 +68,43 @@ export default {
 /* ---------------- orders ---------------- */
 
 function productInfo() {
-  return { sku: PRODUCT.sku, name: PRODUCT.name, unitPrice: PRODUCT.unitPrice, currency: PRODUCT.currency, maxQty: PRODUCT.maxQty };
+  return { sku: PRODUCT.sku, name: PRODUCT.name, unitPrice: PRODUCT.unitPrice, mrp: PRODUCT.mrp, currency: PRODUCT.currency, maxQty: PRODUCT.maxQty };
+}
+
+// Amounts in paise. The discount is rounded to whole rupees.
+export function priceFor(quantity, percentOff) {
+  const subtotal = PRODUCT.unitPrice * quantity;
+  const discount = percentOff ? Math.round(subtotal * percentOff / 10000) * 100 : 0;
+  return { subtotal, discount, amount: subtotal - discount };
+}
+
+function normaliseCoupon(v) { return typeof v === 'string' ? v.toUpperCase().replace(/\s/g, '').slice(0, 32) : ''; }
+
+// The coupon if it can be used for this quantity right now, otherwise a message the buyer can act on.
+async function findCoupon(env, code, quantity) {
+  const invalid = { error: 'coupon_invalid', message: 'This coupon code is not valid.' };
+  if (!COUPON_RE.test(code)) return invalid;
+  const c = await env.DB.prepare('SELECT * FROM coupons WHERE code = ?').bind(code).first();
+  if (!c || !c.active) return invalid;
+  const now = Date.now();
+  if (c.starts_at && Date.parse(c.starts_at) > now) return { error: 'coupon_not_started', message: 'This coupon is not active yet.' };
+  if (c.expires_at && Date.parse(c.expires_at) < now) return { error: 'coupon_expired', message: 'This coupon has expired.' };
+  if (quantity < (c.min_quantity || 1)) return { error: 'coupon_min_quantity', message: `This coupon applies to orders of ${c.min_quantity} or more.` };
+  if (c.max_uses != null) {
+    const used = await env.DB.prepare("SELECT COUNT(*) AS n FROM orders WHERE coupon_code = ? AND status = 'paid'").bind(code).first();
+    if (used.n >= c.max_uses) return { error: 'coupon_used_up', message: 'This coupon has already been used the maximum number of times.' };
+  }
+  return { coupon: c };
+}
+
+async function checkCoupon(request, env) {
+  const b = await readJson(request, 1000);
+  const code = normaliseCoupon(b.code), quantity = Number(b.quantity || 1);
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > PRODUCT.maxQty) return json({ valid: false, error: 'invalid', message: `Choose between 1 and ${PRODUCT.maxQty}.` }, 400);
+  if (!code) return json({ valid: false, error: 'coupon_invalid', message: 'Enter a coupon code.' }, 422);
+  const r = await findCoupon(env, code, quantity);
+  if (r.error) return json({ valid: false, error: r.error, message: r.message }, 422);
+  return json({ valid: true, code, percentOff: r.coupon.percent_off, quantity, ...priceFor(quantity, r.coupon.percent_off) });
 }
 
 async function createOrder(request, env) {
@@ -73,16 +115,24 @@ async function createOrder(request, env) {
   // Same checkout attempt again (double click, refresh, retry after a failed payment): return the same order.
   const existing = await env.DB.prepare('SELECT * FROM orders WHERE idempotency_key = ?').bind(o.idempotencyKey).first();
   if (existing) {
-    if (existing.quantity !== o.quantity || existing.email !== o.email) return json({ error: 'idempotency_conflict' }, 409);
+    if (existing.quantity !== o.quantity || existing.email !== o.email || (existing.coupon_code || '') !== o.couponCode) {
+      return json({ error: 'idempotency_conflict' }, 409);
+    }
     return json(orderResponse(existing, env));
   }
 
+  let percentOff = 0;
+  if (o.couponCode) {
+    const r = await findCoupon(env, o.couponCode, o.quantity);
+    if (r.error) return json({ error: 'invalid', fields: { couponCode: r.message } }, 400);
+    percentOff = r.coupon.percent_off;
+  }
+  const { subtotal, discount, amount } = priceFor(o.quantity, percentOff);
+
   const ref = newRef();
-  const amount = PRODUCT.unitPrice * o.quantity;
-  const rzp = await razorpay(env, 'POST', '/v1/orders', {
-    amount, currency: PRODUCT.currency, receipt: ref,
-    notes: { ref, organisation: o.organisation, phone: o.phone, quantity: String(o.quantity) }
-  });
+  const notes = { ref, organisation: o.organisation, phone: o.phone, quantity: String(o.quantity) };
+  if (o.couponCode) notes.coupon = `${o.couponCode} (${percentOff}% off)`;
+  const rzp = await razorpay(env, 'POST', '/v1/orders', { amount, currency: PRODUCT.currency, receipt: ref, notes });
   if (!rzp.ok || !rzp.body || !rzp.body.id || rzp.body.amount !== amount) {
     console.error('razorpay order create failed', rzp.status, JSON.stringify(rzp.body));
     return json({ error: 'gateway_unavailable' }, 502);
@@ -91,7 +141,7 @@ async function createOrder(request, env) {
   const now = isoNow();
   const row = {
     ref, idempotency_key: o.idempotencyKey, rzp_order_id: rzp.body.id, status: 'created', amount, currency: PRODUCT.currency,
-    quantity: o.quantity, name: o.name, organisation: o.organisation, email: o.email, phone: o.phone, gstin: o.gstin || null,
+    subtotal, discount, coupon_code: o.couponCode || null, quantity: o.quantity, name: o.name, organisation: o.organisation, email: o.email, phone: o.phone, gstin: o.gstin || null,
     address_line1: o.line1, address_line2: o.line2 || null, city: o.city, state: o.state, pincode: o.pincode,
     notes: o.notes || null, created_at: now, updated_at: now
   };
@@ -112,6 +162,7 @@ async function createOrder(request, env) {
 function orderResponse(row, env) {
   return {
     ref: row.ref, status: row.status, razorpayOrderId: row.rzp_order_id, amount: row.amount, currency: row.currency,
+    subtotal: row.subtotal || row.amount, discount: row.discount || 0, couponCode: row.coupon_code || null,
     quantity: row.quantity, keyId: env.RAZORPAY_KEY_ID, prefill: { name: row.name, email: row.email, contact: row.phone }
   };
 }
@@ -182,10 +233,11 @@ async function recordError(env, ref, message) {
 
 async function orderStatus(ref, env) {
   if (!REF_RE.test(ref)) return json({ error: 'not_found' }, 404);
-  const o = await env.DB.prepare('SELECT ref, status, amount, currency, quantity, name, email, created_at, paid_at FROM orders WHERE ref = ?').bind(ref).first();
+  const o = await env.DB.prepare('SELECT ref, status, amount, currency, quantity, discount, coupon_code, name, email, created_at, paid_at FROM orders WHERE ref = ?').bind(ref).first();
   if (!o) return json({ error: 'not_found' }, 404);
   return json({
     ref: o.ref, status: o.status, amount: o.amount, currency: o.currency, quantity: o.quantity,
+    discount: o.discount || 0, couponCode: o.coupon_code || null,
     firstName: o.name.split(/\s+/)[0], email: maskEmail(o.email), createdAt: o.created_at, paidAt: o.paid_at
   });
 }
@@ -235,22 +287,26 @@ async function createLead(request, env, ctx) {
   const lead = {
     source: str(b.source, 40) || null, name: str(b.name, 100), organisation: str(b.organisation, 150) || null,
     role: str(b.role, 100) || null, org_type: str(b.org_type, 80) || null, city: str(b.city, 100) || null,
+    country: str(b.country, 80) || null,
     phone: str(b.phone, 30), email: str(b.email, 200).toLowerCase() || null, interest: str(b.interest, 60) || null,
     message: str(b.message, 2000) || null, page: str(b.page, 100) || null, created_at: isoNow()
   };
   const errors = {};
+  const international = lead.source === 'international';
   if (lead.name.length < 2) errors.name = 'Enter your name.';
   const digits = lead.phone.replace(/\D/g, '');
-  if (digits.length < 10 || digits.length > 15) errors.phone = 'Enter a phone number we can call.';
-  if (lead.email && !EMAIL_RE.test(lead.email)) errors.email = 'Enter a valid email address.';
+  // Overseas enquiries reply by email, so there the phone number is optional and the email is required.
+  if (international ? (digits && (digits.length < 7 || digits.length > 15)) : (digits.length < 10 || digits.length > 15)) errors.phone = 'Enter a phone number we can call.';
+  if (international && !lead.country) errors.country = 'Enter your country.';
+  if (international ? !EMAIL_RE.test(lead.email || '') : (lead.email && !EMAIL_RE.test(lead.email))) errors.email = 'Enter a valid email address.';
   if (Object.keys(errors).length) return json({ error: 'invalid', fields: errors }, 400);
 
   const cols = Object.keys(lead);
   await env.DB.prepare(`INSERT INTO leads (${cols.join(',')}) VALUES (${cols.map(() => '?').join(',')})`).bind(...cols.map(c => lead[c])).run();
   ctx.waitUntil(sendEmail(env,
-    `New Amble Beats enquiry: ${lead.organisation || lead.name}${lead.interest ? ' (' + lead.interest + ')' : ''}`,
+    `New Amble Beats ${international ? 'international ' : ''}enquiry: ${lead.organisation || lead.name}${lead.country ? ', ' + lead.country : ''}${lead.interest ? ' (' + lead.interest + ')' : ''}`,
     [['Name', lead.name], ['Organisation', lead.organisation], ['Role', lead.role], ['Type of centre', lead.org_type],
-      ['City', lead.city], ['Phone', lead.phone], ['Email', lead.email], ['Looking for', lead.interest],
+      ['City', lead.city], ['Country', lead.country], ['Phone', lead.phone], ['Email', lead.email], ['Looking for', lead.interest],
       ['Message', lead.message], ['Form', `${lead.source || ''} ${lead.page || ''}`]]
       .filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join('\n'),
     lead.email));
@@ -272,7 +328,7 @@ export function validateOrder(b) {
     name: str(c.name, 100), organisation: str(c.organisation, 150), email: str(c.email, 200).toLowerCase(),
     phone: normalisePhone(c.phone), gstin: str(c.gstin, 15).toUpperCase().replace(/\s/g, ''),
     line1: str(a.line1, 200), line2: str(a.line2, 200), city: str(a.city, 100), state: str(a.state, 60),
-    pincode: str(a.pincode, 6), notes: str(b.notes, 1000)
+    pincode: str(a.pincode, 6), notes: str(b.notes, 1000), couponCode: normaliseCoupon(b.couponCode)
   };
   if (!/^[A-Za-z0-9-]{16,64}$/.test(v.idempotencyKey)) errors.idempotencyKey = 'Missing checkout key. Reload the page and try again.';
   if (!Number.isInteger(v.quantity) || v.quantity < 1 || v.quantity > PRODUCT.maxQty) errors.quantity = `Choose between 1 and ${PRODUCT.maxQty}.`;
@@ -285,6 +341,7 @@ export function validateOrder(b) {
   if (v.city.length < 2) errors.city = 'Enter the city.';
   if (!STATES.includes(v.state)) errors.state = 'Choose the state.';
   if (!/^[1-9]\d{5}$/.test(v.pincode)) errors.pincode = 'Enter the 6-digit PIN code.';
+  if (v.couponCode && !COUPON_RE.test(v.couponCode)) errors.couponCode = 'This coupon code is not valid.';
   return Object.keys(errors).length ? { errors } : { value: v };
 }
 
@@ -297,8 +354,10 @@ export function normalisePhone(raw) {
 
 async function notifyPaid(env, o) {
   const rupees = (o.amount / 100).toLocaleString('en-IN');
+  const inr = paise => (paise / 100).toLocaleString('en-IN');
   await sendEmail(env, `Paid order ${o.ref}: ${o.quantity} x Amble Beats, Rs ${rupees}`, [
     `Order: ${o.ref}`, `Paid: Rs ${rupees} (${o.payment_method || 'method unknown'})`, `Razorpay payment: ${o.rzp_payment_id}`,
+    o.coupon_code ? `Coupon: ${o.coupon_code}, Rs ${inr(o.discount)} off Rs ${inr(o.subtotal)}` : null,
     `Quantity: ${o.quantity}`, '', `${o.name}, ${o.organisation}`, `Phone: ${o.phone}`, `Email: ${o.email}`,
     o.gstin ? `GSTIN: ${o.gstin}` : 'GSTIN: not given', '', 'Deliver to:', o.address_line1, o.address_line2,
     `${o.city}, ${o.state} ${o.pincode}`, o.notes ? '\nNotes: ' + o.notes : ''

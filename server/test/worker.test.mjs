@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import worker, { PRODUCT, normalisePhone, hmacHex } from '../src/worker.js';
+import worker, { PRODUCT, normalisePhone, hmacHex, priceFor } from '../src/worker.js';
 import { setup } from './harness.mjs';
 
 const ORIGIN = 'https://amble.invengic.in';
@@ -34,7 +34,7 @@ test('creates the Razorpay order at the server price, whatever amount the browse
   assert.equal(r.data.keyId, 'rzp_test_KEYID');
   assert.match(r.data.ref, /^AMB-[0-9A-HJKMNP-TV-Z]{10}$/);
   const rz = t.gw.calls.find(c => c.path === '/v1/orders');
-  assert.equal(rz.body.amount, 9900000);
+  assert.equal(rz.body.amount, 9240000);
   assert.equal(rz.body.currency, 'INR');
   assert.equal(rz.body.receipt, r.data.ref);
   assert.equal(rz.auth, 'Basic ' + btoa('rzp_test_KEYID:test_key_secret'));
@@ -87,7 +87,8 @@ test('only the listed origins may POST', async () => {
   assert.equal(pre.headers.get('Access-Control-Allow-Origin'), ORIGIN);
   const ok = await call(t, 'GET', '/api/product');
   assert.equal(ok.headers.get('Access-Control-Allow-Origin'), ORIGIN);
-  assert.equal(ok.data.unitPrice, 4950000);
+  assert.equal(ok.data.unitPrice, 4620000);
+  assert.equal(ok.data.mrp, 5000000);
 });
 
 test('verify: a genuine captured payment marks the order paid and notifies once', async () => {
@@ -223,7 +224,7 @@ test('order status shows only what the confirmation page needs', async () => {
   const o = await call(t, 'POST', '/api/orders', order());
   const s = await call(t, 'GET', '/api/orders/' + o.data.ref);
   assert.equal(s.status, 200);
-  assert.deepEqual(Object.keys(s.data).sort(), ['amount', 'createdAt', 'currency', 'email', 'firstName', 'paidAt', 'quantity', 'ref', 'status']);
+  assert.deepEqual(Object.keys(s.data).sort(), ['amount', 'couponCode', 'createdAt', 'currency', 'discount', 'email', 'firstName', 'paidAt', 'quantity', 'ref', 'status']);
   assert.equal(s.data.firstName, 'Asha');
   assert.equal(s.data.email, 'as***@example.com');
   assert.equal((await call(t, 'GET', '/api/orders/AMB-0000000000')).status, 404);
@@ -258,4 +259,95 @@ test('malformed JSON and oversized bodies are rejected', async () => {
   const t = setup();
   assert.equal((await call(t, 'POST', '/api/orders', '{not json')).status, 400);
   assert.equal((await call(t, 'POST', '/api/leads', JSON.stringify({ message: 'x'.repeat(9000) }))).status, 413);
+});
+
+
+/* ---------------- coupons ---------------- */
+
+test('coupon check returns the discounted total, rounded to whole rupees', async () => {
+  const t = setup();
+  const r = await call(t, 'POST', '/api/coupons/check', { code: 'amble30', quantity: 1 });
+  assert.equal(r.status, 200);
+  assert.deepEqual(r.data, { valid: true, code: 'AMBLE30', percentOff: 30, quantity: 1, subtotal: 4620000, discount: 1386000, amount: 3234000 });
+  const r2 = await call(t, 'POST', '/api/coupons/check', { code: 'AMBLE20', quantity: 2 });
+  assert.equal(r2.data.amount, 2 * 3696000);
+  assert.deepEqual(priceFor(1, 20), { subtotal: 4620000, discount: 924000, amount: 3696000 });
+});
+
+test('unknown, switched-off, expired and below-minimum coupons are refused with a reason', async () => {
+  const t = setup();
+  const cases = { NOPE: 'coupon_invalid', OFFCODE: 'coupon_invalid', OLDCODE: 'coupon_expired', THREEUP: 'coupon_min_quantity' };
+  for (const [code, err] of Object.entries(cases)) {
+    const r = await call(t, 'POST', '/api/coupons/check', { code, quantity: 1 });
+    assert.equal(r.status, 422, code);
+    assert.equal(r.data.error, err, code);
+    assert.ok(r.data.message.length > 10);
+  }
+  const ok = await call(t, 'POST', '/api/coupons/check', { code: 'THREEUP', quantity: 3 });
+  assert.equal(ok.data.valid, true);
+});
+
+test('an order with a coupon is created at the discounted amount and records the coupon', async () => {
+  const t = setup();
+  const r = await call(t, 'POST', '/api/orders', order({ couponCode: ' amble30 ', amount: 1 }));
+  assert.equal(r.status, 201);
+  assert.equal(r.data.amount, 3234000);
+  assert.equal(r.data.subtotal, 4620000);
+  assert.equal(r.data.discount, 1386000);
+  assert.equal(r.data.couponCode, 'AMBLE30');
+  const rz = t.gw.calls.find(c => c.path === '/v1/orders');
+  assert.equal(rz.body.amount, 3234000);
+  assert.equal(rz.body.notes.coupon, 'AMBLE30 (30% off)');
+  const db = row(t, 'SELECT amount, subtotal, discount, coupon_code FROM orders WHERE ref = ?', r.data.ref);
+  assert.deepEqual({ ...db }, { amount: 3234000, subtotal: 4620000, discount: 1386000, coupon_code: 'AMBLE30' });
+  // paying the discounted amount completes the order, and the email shows the coupon
+  const paid = await t.gw.pay(r.data.razorpayOrderId, 'test_key_secret');
+  const v = await call(t, 'POST', '/api/orders/verify', paid);
+  assert.equal(v.data.status, 'paid');
+  assert.match(t.gw.emails[0].text, /Coupon: AMBLE30, Rs 13,860 off Rs 46,200/);
+  assert.match(t.gw.emails[0].subject, /Rs 32,340/);
+});
+
+test('an invalid coupon stops the order before anything reaches Razorpay', async () => {
+  const t = setup();
+  const r = await call(t, 'POST', '/api/orders', order({ couponCode: 'OLDCODE' }));
+  assert.equal(r.status, 400);
+  assert.match(r.data.fields.couponCode, /expired/);
+  assert.equal(t.gw.calls.length, 0);
+});
+
+test('changing the coupon under the same checkout key does not reuse the old amount', async () => {
+  const t = setup();
+  const o = order();
+  assert.equal((await call(t, 'POST', '/api/orders', o)).status, 201);
+  assert.equal((await call(t, 'POST', '/api/orders', { ...o, couponCode: 'AMBLE30' })).status, 409);
+});
+
+test('a coupon with a use limit stops working once that many orders are paid', async () => {
+  const t = setup();
+  const first = await call(t, 'POST', '/api/orders', order({ couponCode: 'ONCEONLY' }));
+  assert.equal(first.status, 201);
+  // an unpaid order does not use up the coupon
+  assert.equal((await call(t, 'POST', '/api/coupons/check', { code: 'ONCEONLY' })).data.valid, true);
+  const paid = await t.gw.pay(first.data.razorpayOrderId, 'test_key_secret');
+  await call(t, 'POST', '/api/orders/verify', paid);
+  const second = await call(t, 'POST', '/api/orders', order({ couponCode: 'ONCEONLY' }));
+  assert.equal(second.status, 400);
+  assert.match(second.data.fields.couponCode, /maximum number of times/);
+});
+
+/* ---------------- international enquiries ---------------- */
+
+test('international enquiries need an email and a country; the phone is optional', async () => {
+  const t = setup();
+  const ok = await call(t, 'POST', '/api/leads', { source: 'international', name: 'Sara Ahmed', email: 'sara@example.ae', country: 'United Arab Emirates', message: 'Two play centres in Dubai' });
+  assert.equal(ok.status, 201);
+  const lead = row(t, 'SELECT source, country, phone, email FROM leads ORDER BY id DESC LIMIT 1');
+  assert.deepEqual({ ...lead }, { source: 'international', country: 'United Arab Emirates', phone: '', email: 'sara@example.ae' });
+  assert.match(t.gw.emails[0].subject, /international enquiry: Sara Ahmed, United Arab Emirates/);
+  const bad = await call(t, 'POST', '/api/leads', { source: 'international', name: 'No Email', country: '' });
+  assert.equal(bad.status, 400);
+  assert.deepEqual(Object.keys(bad.data.fields).sort(), ['country', 'email']);
+  // Indian enquiries still need a phone number
+  assert.equal((await call(t, 'POST', '/api/leads', { source: 'school', name: 'Ravi', email: 'r@example.com' })).status, 400);
 });

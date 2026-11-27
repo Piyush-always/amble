@@ -10,6 +10,14 @@ const SCHEMA = readFileSync(new URL('../schema.sql', import.meta.url), 'utf8');
 export function memoryD1() {
   const db = new DatabaseSync(':memory:');
   db.exec(SCHEMA);
+  // Coupons used by the tests and the local dev server.
+  db.exec(`INSERT INTO coupons (code, percent_off, active, expires_at, max_uses, min_quantity, created_at) VALUES
+    ('AMBLE20', 20, 1, NULL, NULL, 1, '2026-11-27T00:00:00Z'),
+    ('AMBLE30', 30, 1, NULL, NULL, 1, '2026-11-27T00:00:00Z'),
+    ('OLDCODE', 25, 1, '2026-01-01T00:00:00+05:30', NULL, 1, '2025-12-01T00:00:00Z'),
+    ('OFFCODE', 25, 0, NULL, NULL, 1, '2026-11-27T00:00:00Z'),
+    ('THREEUP', 15, 1, NULL, NULL, 3, '2026-11-27T00:00:00Z'),
+    ('ONCEONLY', 10, 1, NULL, 1, 1, '2026-11-27T00:00:00Z')`);
   return {
     raw: db,
     prepare(sql) {
