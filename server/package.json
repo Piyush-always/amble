@@ -7,9 +7,11 @@
     "test": "node --test test/*.test.mjs",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "db:init": "wrangler d1 execute amble-orders --remote --file=schema.sql"
+    "db:init": "wrangler d1 execute amble-orders --remote --file=schema.sql",
+    "test:browser": "node test/browser.e2e.mjs"
   },
   "devDependencies": {
+    "puppeteer-core": "^23.11.1",
     "wrangler": "^4.0.0"
   }
 }
