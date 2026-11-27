@@ -4,23 +4,75 @@
   'use strict';
   var cfg = window.AMBLE_CONFIG || {};
   var PHONE = cfg.phone || '+91 85111 49747';
-  var unit = 4950000, max = 5;            // paise; replaced by /api/product when the API is reachable
+  var unit = 4620000, mrp = 5000000, max = 5; // paise; replaced by /api/product when the API is reachable
   var qty = 1, busy = false, verifying = false, lastFailure = '';
+  var coupon = null;                        // { code, percentOff } once the server has accepted a code
 
   function $(id) { return document.getElementById(id); }
   var form = $('checkout'), payBtn = $('payBtn'), notice = $('notice');
 
   function rupees(paise) { return '₹' + (paise / 100).toLocaleString('en-IN'); }
+  // Shows what the server will charge. The server recomputes all of it; this is only the preview.
+  function totals() {
+    var subtotal = unit * qty;
+    var discount = coupon ? Math.round(subtotal * coupon.percentOff / 10000) * 100 : 0;
+    return { subtotal: subtotal, discount: discount, total: subtotal - discount };
+  }
   function render() {
+    var t = totals();
     $('qty').textContent = qty;
-    $('unitPrice').textContent = rupees(unit);
-    $('total').textContent = rupees(unit * qty);
+    $('mrp').textContent = rupees(mrp * qty);
+    $('priceLabel').textContent = qty > 1 ? 'Price for ' + qty : 'Price';
+    $('unitPrice').textContent = rupees(t.subtotal);
+    $('discountRow').hidden = !coupon;
+    if (coupon) {
+      $('discountLabel').textContent = coupon.code + ' (' + coupon.percentOff + '% off)';
+      $('discount').textContent = '−' + rupees(t.discount);
+    }
+    $('total').textContent = rupees(t.total);
     $('qtyMinus').disabled = busy || qty <= 1;
     $('qtyPlus').disabled = busy || qty >= max;
-    if (!busy) payBtn.textContent = 'Pay ' + rupees(unit * qty);
+    $('couponCode').disabled = busy;
+    $('couponApply').disabled = busy;
+    if (!busy) payBtn.textContent = 'Pay ' + rupees(t.total);
   }
-  $('qtyMinus').addEventListener('click', function () { if (qty > 1) { qty--; render(); } });
-  $('qtyPlus').addEventListener('click', function () { if (qty < max) { qty++; render(); } });
+  function changeQty(n) {
+    qty = n;
+    render();
+    if (coupon) applyCoupon(coupon.code); // the coupon may have a minimum quantity
+  }
+  $('qtyMinus').addEventListener('click', function () { if (qty > 1) changeQty(qty - 1); });
+  $('qtyPlus').addEventListener('click', function () { if (qty < max) changeQty(qty + 1); });
+
+  /* ---------- coupon ---------- */
+  var couponMsg = $('couponMsg');
+  function couponNote(kind, text, removable) {
+    couponMsg.className = 'coupon-msg' + (kind ? ' ' + kind : '');
+    couponMsg.textContent = text;
+    if (removable) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = 'Remove';
+      b.addEventListener('click', function () { coupon = null; $('couponCode').value = ''; couponNote('', ''); render(); });
+      couponMsg.appendChild(b);
+    }
+  }
+  function applyCoupon(raw) {
+    var code = String(raw || '').toUpperCase().replace(/\s/g, '');
+    if (!code) { couponNote('err', 'Enter a coupon code.'); return; }
+    if (!cfg.apiBase) { couponNote('err', 'Coupons work once online payment is switched on. Mention the code on WhatsApp instead.'); return; }
+    $('couponApply').disabled = true;
+    couponNote('', 'Checking the code…');
+    api('/api/coupons/check', { code: code, quantity: qty }).then(function (r) {
+      coupon = { code: r.code, percentOff: r.percentOff };
+      $('couponCode').value = r.code;
+      couponNote('ok', r.code + ' applied: ' + r.percentOff + '% off.', true);
+    }).catch(function (err) {
+      coupon = null;
+      couponNote('err', (err.data && err.data.message) || 'We could not check the code. Try again in a moment.');
+    }).then(function () { render(); });
+  }
+  $('couponApply').addEventListener('click', function () { applyCoupon($('couponCode').value); });
+  $('couponCode').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); applyCoupon($('couponCode').value); } });
 
   function setBusy(on, label) {
     busy = on;
@@ -86,7 +138,8 @@
       quantity: qty,
       customer: { name: v('name'), organisation: v('organisation'), email: v('email'), phone: v('phone'), gstin: v('gstin') },
       address: { line1: v('line1'), line2: v('line2'), city: v('city'), state: v('state'), pincode: v('pincode') },
-      notes: v('notes')
+      notes: v('notes'),
+      couponCode: coupon ? coupon.code : ''
     };
   }
 
@@ -126,7 +179,8 @@
   /* ---------- no API yet: send the order on WhatsApp instead ---------- */
   function orderByWhatsApp(d) {
     var a = d.address, c = d.customer;
-    var text = ['Hi Invengic, I would like to order Amble Beats.', 'Quantity: ' + d.quantity + ' (' + rupees(unit * d.quantity) + ')',
+    var text = ['Hi Invengic, I would like to order Amble Beats.', 'Quantity: ' + d.quantity + ' (' + rupees(totals().total) + ')',
+      d.couponCode ? 'Coupon: ' + d.couponCode : '',
       'Name: ' + c.name, 'Organisation: ' + c.organisation, 'Phone: ' + c.phone, 'Email: ' + c.email, c.gstin ? 'GSTIN: ' + c.gstin : '',
       'Deliver to: ' + [a.line1, a.line2, a.city, a.state, a.pincode].filter(Boolean).join(', '), d.notes ? 'Notes: ' + d.notes : '']
       .filter(Boolean).join('\n');
@@ -154,7 +208,13 @@
       openRazorpay(order);
     }).catch(function (err) {
       setBusy(false);
-      if (err.status === 400 && err.data && err.data.fields) {
+      if (err.status === 400 && err.data && err.data.fields && err.data.fields.couponCode) {
+        // The coupon stopped working between Apply and Pay (expired, used up): show the new total first.
+        coupon = null;
+        couponNote('err', err.data.fields.couponCode);
+        render();
+        showNotice('err', ['The coupon could not be applied, so the total has changed to ' + rupees(totals().total) + '. Press Pay to continue without it, or try another code.']);
+      } else if (err.status === 400 && err.data && err.data.fields) {
         var first = null;
         Object.keys(err.data.fields).forEach(function (k) {
           if ($(k)) { fieldError(k, err.data.fields[k]); if (!first) first = $(k); }
@@ -180,7 +240,7 @@
       amount: order.amount,
       currency: order.currency,
       name: 'Amble Beats',
-      description: order.quantity + (order.quantity > 1 ? ' instruments' : ' instrument') + ' · ' + order.ref,
+      description: order.quantity + (order.quantity > 1 ? ' instruments' : ' instrument') + (order.couponCode ? ', ' + order.couponCode : '') + ' · ' + order.ref,
       image: new URL('assets/apple-touch-icon.png', location.href).href,
       prefill: order.prefill,
       notes: { ref: order.ref },
@@ -233,8 +293,11 @@
     payBtn.dataset.mode = 'whatsapp';
   } else {
     api('/api/product').then(function (p) {
-      if (p && p.unitPrice > 0) { unit = p.unitPrice; max = p.maxQty || max; if (qty > max) qty = max; render(); }
+      if (p && p.unitPrice > 0) { unit = p.unitPrice; mrp = p.mrp || mrp; max = p.maxQty || max; if (qty > max) qty = max; render(); }
     }).catch(function () { /* keep the built-in price; the server still charges its own price */ });
   }
   render();
+  // A coupon link from the sales team, e.g. checkout.html?coupon=AMBLE20
+  var linked = new URLSearchParams(location.search).get('coupon');
+  if (linked) { $('couponCode').value = linked; applyCoupon(linked); }
 })();

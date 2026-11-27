@@ -6,6 +6,7 @@
   --sans:"Anek Latin",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
 body{font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 h1,h2{font-weight:600;font-stretch:112%}
 h3,h4{font-weight:600}
@@ -106,6 +107,19 @@ h3,h4{font-weight:600}
 .lines{margin:14px 0 0;padding:14px 0 0;border-top:1px solid var(--line)}
 .lines div{display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-size:15px}
 .lines .total{font-size:20px;font-weight:600;padding-top:10px}
+.lines s{color:var(--muted)}
+.lines .save{color:var(--ok);font-weight:500}
+.coupon{margin:16px 0 0}
+.coupon label{display:block;font-size:15px;font-weight:500;margin-bottom:6px}
+.coupon-row{display:flex;gap:8px}
+.coupon-row input{flex:1;min-width:0;font:inherit;font-size:16px;text-transform:uppercase;color:var(--ink);background:#fff;border:1px solid rgba(36,20,14,.28);border-radius:10px;padding:10px 12px;min-height:44px}
+.coupon-row input:focus{outline:2px solid var(--wood);outline-offset:0;border-color:var(--wood)}
+.coupon-row .btn{min-height:44px;padding:8px 18px}
+.coupon-msg{margin:6px 0 0;font-size:14px}
+.coupon-msg:empty{display:none}
+.coupon-msg.ok{color:var(--ok)}
+.coupon-msg.err{color:var(--bad)}
+.coupon-msg button{font:inherit;color:inherit;background:none;border:0;padding:0;margin-left:6px;text-decoration:underline;cursor:pointer}
 .next{margin:20px 0 0;padding:16px 0 0;border-top:1px solid var(--line);font-size:15px}
 .next h3{font-size:16px;margin:0 0 8px}
 .next ol{margin:0;padding-left:20px;color:#3b2c24}

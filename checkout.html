@@ -88,7 +88,7 @@
     </fieldset>
     <div class="pay-row">
       <div class="notice" id="notice" role="alert" hidden></div>
-      <button class="btn btn-primary" id="payBtn" type="submit">Pay ₹49,500</button>
+      <button class="btn btn-primary" id="payBtn" type="submit">Pay ₹46,200</button>
       <p class="secure">Razorpay handles the payment. We never see or store your card or UPI details. By paying you agree to our <a href="terms.html">terms of sale</a>.</p>
     </div>
   </form>
@@ -100,10 +100,17 @@
       <div class="qty-ctl" role="group" aria-labelledby="qtyLabel"><button type="button" id="qtyMinus" aria-label="One fewer">&minus;</button><output id="qty" aria-live="polite">1</output><button type="button" id="qtyPlus" aria-label="One more">+</button></div>
     </div>
     <p class="muted" id="qtyNote">Need more than 5? <a href="index.html#contact">Ask us for a quotation</a>.</p>
+    <div class="coupon">
+      <label for="couponCode">Coupon code</label>
+      <div class="coupon-row"><input id="couponCode" maxlength="32" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Enter your code"><button type="button" class="btn btn-ghost" id="couponApply">Apply</button></div>
+      <p class="coupon-msg" id="couponMsg" role="status" aria-live="polite"></p>
+    </div>
     <div class="lines">
-      <div><span>Price</span><span id="unitPrice">₹49,500</span></div>
+      <div><span>MRP</span><s id="mrp">₹50,000</s></div>
+      <div><span id="priceLabel">Price</span><span id="unitPrice">₹46,200</span></div>
+      <div id="discountRow" class="save" hidden><span id="discountLabel">Coupon</span><span id="discount"></span></div>
       <div><span>Delivery</span><span class="tbc">Free</span></div>
-      <div class="total"><span>Total</span><span id="total">₹49,500</span></div>
+      <div class="total"><span>Total</span><span id="total">₹46,200</span></div>
       <p class="muted"><span class="tbc">Inclusive of GST</span></p>
     </div>
     <div class="next">
